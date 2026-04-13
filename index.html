@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ple | The Deterministic Intent Engine</title>
+    
+    <meta name="description" content="Stop writing code. Stop fixing AI hallucinations. ple is a deterministic intent engine built on Intent Understanding, Expression, Memory, and Learning.">
+    <meta property="og:title" content="ple | The Deterministic Intent Engine">
+    <meta property="og:description" content="Stop writing code. Stop fixing AI hallucinations. ple is a deterministic intent engine built on Intent Understanding, Expression, Memory, and Learning.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ple.simway.io">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 5rem;
+            margin: 0;
+            letter-spacing: -2px;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .hook {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 50px;
+            line-height: 1.2;
+        }
+        .diagram-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 80px auto;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .vertex-label {
+            position: absolute;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 200px;
+        }
+        .label-understanding {
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .label-memory {
+            bottom: -30px;
+            left: -110px;
+            text-align: right;
+        }
+        .label-landing {
+            bottom: -30px;
+            right: -110px;
+            text-align: left;
+        }
+        .label-learning {
+            top: 175px;
+            left: 165px;
+            text-align: left;
+            width: 150px;
+            color: #ff4500;
+        }
+        .vertex-desc {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: normal;
+        }
+        .label-learning .vertex-desc {
+            color: #cc3700;
+        }
+        .status {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .cta {
+            display: inline-block;
+            padding: 15px 30px;
+            border: 1px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        .cta:hover {
+            background-color: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ple</h1>
+        <div class="subtitle">The Deterministic Intent Engine</div>
+        
+        <div class="hook">
+            Stop writing code.<br>
+            Stop fixing AI hallucinations.
+        </div>
+        
+        <div class="diagram-container">
+            <svg viewBox="0 0 100 100">
+                <!-- The Triangle -->
+                <polygon points="50,10 90,85 10,85" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+                
+                <!-- Center Core Connections -->
+                <line x1="50" y1="10" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <line x1="90" y1="85" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <line x1="10" y1="85" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+                <!-- The Nodes -->
+                <circle cx="50" cy="10" r="3" fill="#fff"/>
+                <circle cx="90" cy="85" r="3" fill="#fff"/>
+                <circle cx="10" cy="85" r="3" fill="#fff"/>
+                
+                <!-- Center Core Node -->
+                <circle cx="50" cy="60" r="4" fill="#ff4500"/>
+            </svg>
+            
+            <div class="vertex-label label-understanding">
+                Intent Understanding
+                <div class="vertex-desc">Translating human thought into rigid structure</div>
+            </div>
+            
+            <div class="vertex-label label-memory">
+                Memory
+                <div class="vertex-desc">An append-only history of truth</div>
+            </div>
+            
+            <div class="vertex-label label-landing">
+                Expression
+                <div class="vertex-desc">Projecting the domain into disposable execution code</div>
+            </div>
+
+            <div class="vertex-label label-learning">
+                Learning
+                <div class="vertex-desc">The continuous evolution of the domain</div>
+            </div>
+        </div>
+
+        <div class="status">Private Alpha. Launching April 30, 2026.</div>
+
+        <a href="mailto:welcome@simway.io" class="cta">Build the future with us</a>
+    </div>
+</body>
+</html>
