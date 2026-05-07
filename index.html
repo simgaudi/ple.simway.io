@@ -166,20 +166,97 @@
         }
         .demo-preview {
             width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #111 0%, #000 100%);
+            height: 220px;
+            background: #0a0a0a;
             border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #444;
-            font-weight: bold;
+            display: block;
+            cursor: pointer;
             transition: border-color 0.2s ease;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            text-decoration: none;
         }
         .demo-preview:hover {
             border-color: #ff4500;
+        }
+        .demo-preview img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .demo-preview-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        .demo-preview:hover .demo-preview-overlay {
+            opacity: 1;
+        }
+        .demo-preview-overlay span {
+            padding: 12px 24px;
+            border: 2px solid #ff4500;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 4px;
+            background: rgba(255,69,0,0.15);
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+        .modal-header span {
             color: #888;
+            font-size: 0.9rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #ff4500;
+        }
+        .modal-body {
+            flex: 1;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
         }
     </style>
 </head>
@@ -238,8 +315,9 @@
             <p>
                 Experience the transition from Chaos to Order. Watch how fuzzy human intent is transformed into a deterministic domain model and executable artifact in real-time.
             </p>
-            <a href="/demo/" class="demo-preview">
-                [ OPEN LIVE DEMO ]
+            <a href="#" class="demo-preview" onclick="openDemo();return false;">
+                <img src="/demo/screenshot.png" alt="ple demo preview">
+                <div class="demo-preview-overlay"><span>▶ Launch Demo</span></div>
             </a>
         </div>
 
@@ -247,10 +325,40 @@
 
         <div class="cta-container">
             <div class="cta-row">
-                <a href="/demo/" class="cta cta-gold">Try the v0.4 Gold Demo</a>
+                <a href="#" onclick="openDemo();return false;" class="cta cta-gold">Try the v0.4 Gold Demo</a>
                 <a href="mailto:welcome@simway.io" class="cta">Build the future with us</a>
             </div>
         </div>
     </div>
+
+    <!-- Demo Modal -->
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-header">
+            <span>ple • Interactive Demo</span>
+            <button class="modal-close" onclick="closeDemo()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="demoFrame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openDemo() {
+            document.getElementById('demoModal').classList.add('active');
+            document.getElementById('demoFrame').src = '/demo/';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDemo() {
+            document.getElementById('demoModal').classList.remove('active');
+            document.getElementById('demoFrame').src = '';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDemo();
+        });
+        document.getElementById('demoModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDemo();
+        });
+    </script>
 </body>
 </html>
