@@ -1,0 +1,107 @@
+{
+  "info": {
+    "name": "RetailBanking API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+  {
+    "name": "Deposit",
+    "request": {
+      "method": "POST",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"amount\": 413.16\n}"
+      },
+      "url": {
+        "raw": "http://localhost:8080/api/bankaccount/1/deposit",
+        "protocol": "http",
+        "host": [
+          "localhost"
+        ],
+        "port": "8080",
+        "path": [
+          "api",
+          "bankaccount",
+          "1",
+          "deposit"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Withdrawal",
+    "request": {
+      "method": "POST",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"amount\": 13.88\n}"
+      },
+      "url": {
+        "raw": "http://localhost:8080/api/bankaccount/1/withdrawal",
+        "protocol": "http",
+        "host": [
+          "localhost"
+        ],
+        "port": "8080",
+        "path": [
+          "api",
+          "bankaccount",
+          "1",
+          "withdrawal"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get All BankAccount",
+    "request": {
+      "method": "GET",
+      "header": [],
+      "url": {
+        "raw": "http://localhost:8080/api/bankaccount",
+        "protocol": "http",
+        "host": [
+          "localhost"
+        ],
+        "port": "8080",
+        "path": [
+          "api",
+          "bankaccount"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get BankAccount by ID",
+    "request": {
+      "method": "GET",
+      "header": [],
+      "url": {
+        "raw": "http://localhost:8080/api/bankaccount/1",
+        "protocol": "http",
+        "host": [
+          "localhost"
+        ],
+        "port": "8080",
+        "path": [
+          "api",
+          "bankaccount",
+          "1"
+        ]
+      }
+    }
+  }
+]
+}

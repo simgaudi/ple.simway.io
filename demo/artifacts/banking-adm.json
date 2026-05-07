@@ -1,0 +1,91 @@
+{
+  "domainName": "RetailBanking",
+  "aggregates": [
+    {
+      "name": "BankAccount",
+      "rootEntity": "Account",
+      "entities": [
+        {
+          "name": "Account",
+          "fields": [
+            { "name": "accountNumber", "type": "String", "required": true },
+            { "name": "currency", "type": "String", "required": true },
+            { "name": "balance", "type": "Decimal", "required": true }
+          ]
+        }
+      ],
+      "valueObjects": [],
+      "states": ["Active"],
+      "commands": [
+        {
+          "name": "Deposit",
+          "actor": "Customer",
+          "requiredState": "Active",
+          "targetState": "Active",
+          "parameters": [
+            { "name": "amount", "type": "Decimal", "required": true }
+          ]
+        },
+        {
+          "name": "Withdrawal",
+          "actor": "Customer",
+          "requiredState": "Active",
+          "targetState": "Active",
+          "parameters": [
+            { "name": "amount", "type": "Decimal", "required": true }
+          ]
+        }
+      ],
+      "transitions": [
+        {
+          "trigger": "Deposit",
+          "fromState": "Active",
+          "toState": "Active"
+        },
+        {
+          "trigger": "Withdrawal",
+          "fromState": "Active",
+          "toState": "Active"
+        }
+      ],
+      "invariants": [
+        {
+          "rule": "balance cannot go below zero unless OverdraftFacility is active",
+          "scope": "Account"
+        }
+      ],
+      "reducers": [
+        {
+          "commandName": "Deposit",
+          "targetField": "balance",
+          "operation": "ADD",
+          "sourceParameter": "amount"
+        },
+        {
+          "commandName": "Withdrawal",
+          "targetField": "balance",
+          "operation": "SUBTRACT",
+          "sourceParameter": "amount"
+        }
+      ]
+    }
+  ],
+  "globalEvents": [
+    {
+      "name": "DepositCompleted",
+      "emittedBy": "BankAccount",
+      "trigger": "Deposit",
+      "payload": [
+        { "name": "amount", "type": "Decimal", "required": true }
+      ]
+    },
+    {
+      "name": "FundsWithdrawn",
+      "emittedBy": "BankAccount",
+      "trigger": "Withdrawal",
+      "payload": [
+        { "name": "amount", "type": "Decimal", "required": true }
+      ]
+    }
+  ]
+}

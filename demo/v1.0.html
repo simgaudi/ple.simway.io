@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ple v1.0 Blueprint (Interactive Mock)</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        /* Custom modal for Contradiction UX */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .conflict-modal { background: #fff; padding: 30px; border-radius: 8px; max-width: 500px; border-left: 5px solid var(--error-color); }
+        .conflict-modal h3 { color: var(--error-color); margin-bottom: 15px; }
+        .conflict-modal .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .conflict-modal .btn-danger { background-color: var(--error-color); color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        .conflict-modal .btn-secondary { background-color: #e0e0e0; color: #333; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        
+        /* Artifact Playground & Event Stream styles */
+        .swagger-ui-mock { font-family: 'Monaco', 'Menlo', monospace; font-size: 13px; background: #282c34; color: #abb2bf; padding: 15px; border-radius: 4px; white-space: pre-wrap; }
+        .event-stream { font-family: 'Monaco', 'Menlo', monospace; font-size: 13px; background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 4px; height: 300px; overflow-y: auto; }
+        .event-log { border-left: 2px solid #007acc; padding-left: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        
+        /* Overrides to match split screen better */
+        .container { height: 100vh; display: flex; flex-direction: column; max-width: 1400px; margin: 0 auto; }
+        .panel { display: flex; flex-direction: column; flex: 1; }
+        .tab-content { display: none; flex: 1; padding: 20px; overflow-y: auto; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Conflict Modal (The Contradiction UX) -->
+    <div class="modal-overlay" id="conflictModal">
+        <div class="conflict-modal">
+            <h3>⚠️ Architectural Contradiction Detected</h3>
+            <p>You just stated: <br><strong>"The account balance can be negative for premium users."</strong></p>
+            <p style="margin-top:10px;">Previously, you stated in Rule_BankAccount_0: <br><strong>"The account cannot be overdrawn (balance cannot go below zero) unless an OverdraftFacility is active."</strong></p>
+            <p style="margin-top:10px; color: #555;">These are mathematically incompatible in the ADM. Which intent survives?</p>
+            <div class="btn-group">
+                <button class="btn-danger" onclick="resolveConflict('new')">Override with New Rule</button>
+                <button class="btn-secondary" onclick="resolveConflict('keep')">Keep Original Rule</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>🎯 ple v1.0 Blueprint (Interactive Mock)</h1>
+                <p>The Domain Control Center (Headless Strategy / Split-Brain Workspace)</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <select id="versionSelector" onchange="window.location.href=this.value" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; background-color: white; color: #333; cursor: pointer;">
+                    <option value="v1.0.html" selected>v1.0 Blueprint Demo (Interactive Mock)</option>
+                    <option value="v0.3.html">v0.3 Manifesto (Gold Standard Demo)</option>
+                    <option value="index.html">Live Sandbox Visualizer</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="split-screen">
+            <!-- Left Pane: The Chaos / Ingestion -->
+            <div class="panel left-panel">
+                <div class="panel-header">
+                    <h2>The Chaos / Ingestion</h2>
+                    <p class="hint">Conversational input layer for rules/BDD</p>
+                </div>
+                <textarea id="intent-textarea" class="intent-textarea">Context: We are building the core ledger for retail banking. 
+The primary entity is the BankAccount, which must have an accountNumber, a currency, and a balance.
+
+Commands (The actions):
+- Deposit: Increases the balance
+- Withdrawal: Decreases the balance
+
+Events (The outcomes):
+- DepositCompleted: Emitted when a deposit successfully processes
+- FundsWithdrawn: Emitted when a withdrawal successfully processes to trigger an SMS alert
+
+Business Rules (The guards):
+- The account cannot be overdrawn (balance cannot go below zero) unless an OverdraftFacility is active.</textarea>
+                
+                <div style="display: flex; gap: 10px; padding: 0 15px;">
+                    <button id="compile-btn" class="btn btn-primary" style="flex: 2; margin: 15px 0;">Compile Domain Intent</button>
+                    <button id="conflict-btn" class="btn btn-secondary" style="flex: 1; margin: 15px 0; background: #ff9800; color: white; border: none; border-radius: 6px; padding: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">Simulate Conflict</button>
+                </div>
+                
+                <div id="terminal-output" class="status-message loading" style="display: none; white-space: pre-line; margin: 0 15px 15px 15px; padding: 10px; background: #e8f0fe; border-radius: 4px;"></div>
+            </div>
+
+            <!-- Right Pane: The Control / Receipt -->
+            <div class="panel right-panel">
+                <div class="panel-header">
+                    <h2>The Control / Receipt</h2>
+                    <p class="hint">Real-time rendering of the Abstract Domain Model</p>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'diagram-tab')">Visual Contract</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'artifacts-tab')">Artifact Playground</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'events-tab')">Event Time-Machine</button>
+                </div>
+
+                <!-- Diagram Tab -->
+                <div id="diagram-tab" class="tab-content active">
+                    <div id="mermaid-placeholder" style="text-align: center; color: #666; padding: 50px;">Awaiting compilation...</div>
+                    <div class="mermaid" id="mermaid-graph" style="display: none;">
+graph TD
+    classDef command fill:#2563eb,stroke:#1d4ed8,color:#fff,rx:5px,ry:5px;
+    classDef event fill:#16a34a,stroke:#15803d,color:#fff,rx:5px,ry:5px;
+    classDef rule fill:#f59e0b,stroke:#b45309,color:#fff,shape:hexagon;
+    classDef classBox fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff,font-family:Arial;
+
+    subgraph BankAccount [Aggregate: BankAccount]
+        Ent_BankAccount["<b>Account</b><br/>---<br/>accountNumber: String<br/>currency: String<br/>balance: Decimal<br/>"]:::classBox
+        C_BankAccount_Deposit["<b>Deposit</b><br/>---<br/>amount: Decimal<br/>"]:::command
+        Ent_BankAccount -->|executes| C_BankAccount_Deposit
+        C_BankAccount_Withdrawal["<b>Withdrawal</b><br/>---<br/>amount: Decimal<br/>"]:::command
+        Ent_BankAccount -->|executes| C_BankAccount_Withdrawal
+        R_BankAccount_0{{Rule: balance cannot go below zero unless OverdraftFacility is active}}:::rule
+        E_BankAccount_DepositCompleted["<b>DepositCompleted</b><br/>---<br/>amount: Decimal<br/>"]:::event
+        C_BankAccount_Deposit -->|emits| E_BankAccount_DepositCompleted
+        E_BankAccount_FundsWithdrawn["<b>FundsWithdrawn</b><br/>---<br/>amount: Decimal<br/>"]:::event
+        C_BankAccount_Withdrawal -->|emits| E_BankAccount_FundsWithdrawn
+    end
+                    </div>
+                </div>
+
+                <!-- Artifact Playground Tab -->
+                <div id="artifacts-tab" class="tab-content">
+                    <div id="artifacts-placeholder" style="text-align: center; color: #666; padding: 50px;">Awaiting compilation...</div>
+                    <div id="artifacts-content" style="display: none;">
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">Generated OpenAPI Spec (Interactive)</h3>
+                        <div class="swagger-ui-mock">POST /api/v1/bank-accounts/{id}/deposit
+{
+  "amount": "Decimal"
+}
+<span style="color: #98c379;">-> 200 OK (Emits: DepositCompleted)</span>
+
+POST /api/v1/bank-accounts/{id}/withdrawal
+{
+  "amount": "Decimal"
+}
+<span style="color: #98c379;">-> 200 OK (Emits: FundsWithdrawn)</span>
+<span style="color: #e06c75;">-> 400 Bad Request (Violates: Rule_BankAccount_0)</span></div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" onclick="simulateTestScenario()">Run Deterministic Test Scenario</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Time-Machine Tab -->
+                <div id="events-tab" class="tab-content">
+                    <div id="events-placeholder" style="text-align: center; color: #666; padding: 50px;">Awaiting runtime events...</div>
+                    <div id="events-content" style="display: none;">
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">Event Stream Viewer</h3>
+                        <div class="event-stream" id="event-stream">
+                            <div class="event-log">
+                                <strong style="color: #569cd6;">[00:00:01] System Initialization</strong><br>
+                                Ledger ready to accept commands.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching logic
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Compilation Simulation
+        document.getElementById('compile-btn').addEventListener('click', function() {
+            var btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Parsing Semantic Intent...';
+
+            var terminal = document.getElementById('terminal-output');
+            terminal.style.display = 'block';
+            terminal.textContent = '-> Translating BDD Markdown to Abstract Domain Model (ADM)...\n';
+
+            setTimeout(function() {
+                terminal.textContent += '-> Validating against Zod Schema...\n';
+                btn.textContent = 'Rendering Visual Contract...';
+            }, 1000);
+
+            setTimeout(function() {
+                terminal.textContent += '-> Generating Java Exhaust and OpenAPI specifications...\n';
+                document.getElementById('mermaid-placeholder').style.display = 'none';
+                document.getElementById('mermaid-graph').style.display = 'block';
+            }, 2000);
+
+            setTimeout(function() {
+                terminal.textContent += '-> Compilation Complete [SUCCESS]\n';
+                btn.textContent = 'Compilation Complete [SUCCESS]';
+                btn.style.backgroundColor = '#28a745';
+                btn.style.borderColor = '#28a745';
+                
+                // Show Artifacts content
+                document.getElementById('artifacts-placeholder').style.display = 'none';
+                document.getElementById('artifacts-content').style.display = 'block';
+
+                // Show Events content
+                document.getElementById('events-placeholder').style.display = 'none';
+                document.getElementById('events-content').style.display = 'block';
+            }, 3000);
+        });
+
+        // Contradiction UX Simulation
+        document.getElementById('conflict-btn').addEventListener('click', function() {
+            document.getElementById('conflictModal').style.display = 'flex';
+        });
+
+        function resolveConflict(choice) {
+            document.getElementById('conflictModal').style.display = 'none';
+            var terminal = document.getElementById('terminal-output');
+            terminal.style.display = 'block';
+            
+            if (choice === 'new') {
+                terminal.textContent = '-> Conflict Resolved: Overwrote Rule_BankAccount_0 with new invariant.\n';
+                let textarea = document.getElementById('intent-textarea');
+                textarea.value = textarea.value.replace(
+                    'The account cannot be overdrawn (balance cannot go below zero) unless an OverdraftFacility is active.',
+                    'The account balance can be negative for premium users.'
+                );
+            } else {
+                terminal.textContent = '-> Conflict Resolved: Rejected new input. Maintained Rule_BankAccount_0.\n';
+            }
+        }
+
+        function simulateTestScenario() {
+            // Automatically switch to the events tab
+            let eventMockObj = { currentTarget: document.querySelectorAll('.tab-btn')[2] };
+            switchTab(eventMockObj, 'events-tab');
+            
+            var stream = document.getElementById('event-stream');
+            
+            setTimeout(() => {
+                stream.innerHTML += `<div class="event-log" style="border-left-color: #4CAF50;">
+                    <strong style="color: #4CAF50;">[00:02:14] Command Executed: Deposit</strong><br>
+                    { "amount": "500.00", "accountId": "ACC-123" }
+                </div>`;
+                stream.scrollTop = stream.scrollHeight;
+            }, 500);
+
+            setTimeout(() => {
+                stream.innerHTML += `<div class="event-log" style="border-left-color: #2196F3;">
+                    <strong style="color: #2196F3;">[00:02:15] Event Emitted: DepositCompleted</strong><br>
+                    { "amount": "500.00", "newBalance": "500.00", "accountId": "ACC-123" }
+                </div>`;
+                stream.scrollTop = stream.scrollHeight;
+            }, 1200);
+
+            setTimeout(() => {
+                stream.innerHTML += `<div class="event-log" style="border-left-color: #f44336;">
+                    <strong style="color: #f44336;">[00:02:18] Command Rejected: Withdrawal</strong><br>
+                    { "amount": "600.00", "accountId": "ACC-123" }<br>
+                    <span style="color: #e06c75;">Reason: Violates Rule_BankAccount_0 (balance cannot go below zero)</span>
+                </div>`;
+                stream.scrollTop = stream.scrollHeight;
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
