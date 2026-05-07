@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ple Sandbox - Chaos to Order</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Mermaid for diagram rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>🎯 Ple Sandbox</h1>
+                <p>Chaos → Order · Simulated Chat Interface</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <select id="versionSelector" onchange="window.location.href=this.value" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; background-color: white; color: #333; cursor: pointer;">
+                    <option value="index.html" selected>v0.4 Chaos Demo</option>
+                    <option value="v0.3.html">v0.3 Manifesto (Gold Standard Demo)</option>
+                    <option value="v1.0.html">v1.0 Blueprint Demo (Interactive Mock)</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="split-screen">
+            <!-- Left Panel: The Chaos / Ingestion (Chat View) -->
+            <div class="panel left-panel">
+                <div class="panel-header">
+                    <h2>The Chaos / Ingestion</h2>
+                    <p class="hint">Describe your domain in natural conversation</p>
+                </div>
+
+                <!-- Domain Artifact Bar (shown after first build) -->
+                <div id="artifactBar" class="artifact-bar hidden">
+                    <span class="artifact-bar-label">Artifacts:</span>
+                    <div id="pillsList" class="pills-list"></div>
+                </div>
+
+                <!-- Chat History -->
+                <div id="chatHistory" class="chat-history">
+                    <p class="chat-placeholder">Type a domain intent statement below and hit Send to begin.</p>
+                </div>
+
+                <!-- Chat Input Bar (replaces standalone Compile button) -->
+                <div class="chat-input-bar">
+                    <input id="chatInput" type="text" placeholder="e.g. We're building a new retail bank ledger..."
+                           class="chat-input" autocomplete="off" />
+                    <button id="sendBtn" class="btn-chat-send" title="Add to conversation" disabled>Send</button>
+                    <button id="buildItBtn" class="btn-build-it" title="Compile all messages into Visual Contract" disabled>Build It</button>
+                    <button id="newDomainBtn" class="btn-new-domain" title="Start a new domain conversation">+ New Domain</button>
+                </div>
+
+                <div id="statusMessage" class="status-message"></div>
+            </div>
+
+            <!-- Right Panel: The Control / Receipt -->
+            <div class="panel right-panel">
+                <div class="panel-header">
+                    <h2>The Control / Receipt</h2>
+                    <p class="hint">Generated ADM, PRD & Diagram</p>
+                </div>
+                
+                <!-- Version Navigator (shown after compilation) -->
+                <div id="versionNav" class="version-nav hidden">
+                    <label for="versionDropdown" class="version-label">Version:</label>
+                    <select id="versionDropdown" class="version-dropdown">
+                        <option value="v1">v1</option>
+                        <option value="v2">v2</option>
+                        <option value="v3">v3</option>
+                        <option value="v4">v4</option>
+                        <option value="v5" selected>v5 (latest)</option>
+                    </select>
+                    <span id="versionTimestamp" class="version-timestamp"></span>
+                    <span id="versionDelta" class="version-delta"></span>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="diagram">Diagram</button>
+                    <button class="tab-btn" data-tab="adm">ADM JSON</button>
+                    <button class="tab-btn" data-tab="prd">Generated PRD</button>
+                    <button class="tab-btn exec-tab hidden" data-tab="live-api">Live API</button>
+                    <button class="tab-btn exec-tab hidden" data-tab="event-stream">Event Stream</button>
+                </div>
+
+                <!-- Artifact URL (shown after compilation) -->
+                <div id="artifactUrlBar" class="artifact-url-bar hidden">
+                    <span class="artifact-url-icon">📦</span>
+                    <code id="artifactUrlText" class="artifact-url-text"></code>
+                    <button id="artifactUrlCopyBtn" class="artifact-url-copy" title="Copy to clipboard">📋</button>
+                    <span id="artifactUrlMeta" class="artifact-url-meta"></span>
+                </div>
+
+                <!-- Deploy Section (shown after compilation) -->
+                <div id="deploySection" class="deploy-section hidden">
+                    <div class="deploy-bar">
+                        <button id="deployBtn" class="btn-deploy">🚀 Deploy to Sandbox</button>
+                        <span id="deployStatus" class="deploy-status">○ Not Deployed</span>
+                    </div>
+                </div>
+
+                <!-- Diagram Tab -->
+                <div id="diagramTab" class="tab-content active">
+                    <div id="mermaidContainer" class="mermaid-container">
+                        <p class="placeholder">Diagram will appear here after compilation</p>
+                    </div>
+                </div>
+
+                <!-- ADM JSON Tab -->
+                <div id="admTab" class="tab-content">
+                    <pre id="admJsonOutput" class="adm-json">
+{
+  "domainName": "...",
+  "aggregates": [],
+  "globalEvents": []
+}
+                    </pre>
+                </div>
+
+                <!-- Generated PRD Tab -->
+                <div id="prdTab" class="tab-content">
+                    <pre id="prdOutput" class="prd-markdown">PRD will appear here...</pre>
+                </div>
+
+                <!-- Live API Tab -->
+                <div id="live-apiTab" class="tab-content">
+                    <div class="api-playground">
+                        <p class="api-hint">Try out the generated API endpoints. Each command sends a request to the live service.</p>
+                        <div id="apiEndpointList" class="api-endpoint-list"></div>
+                    </div>
+                </div>
+
+                <!-- Event Stream Tab -->
+                <div id="event-streamTab" class="tab-content">
+                    <div class="event-stream-container">
+                        <div class="event-stream-header">
+                            <span>Live Domain Event Stream</span>
+                            <span class="event-badge">LIVE</span>
+                        </div>
+                        <div id="eventStreamLog" class="event-stream-log">
+                            <p class="event-placeholder">No events yet. Use the Live API to trigger domain events.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conflict Resolution Modal (Contradiction UX) -->
+    <div id="conflictOverlay" class="conflict-overlay" style="display:none;">
+        <div class="conflict-modal">
+            <h3>⚠ Architectural Contradiction Detected</h3>
+            <p id="conflictDesc" style="margin-bottom:12px;">Loading…</p>
+            <div class="conflict-actions">
+                <button id="conflictKeepBtn" class="btn btn-conflict-keep">Keep Original Rule</button>
+                <button id="conflictOverrideBtn" class="btn btn-conflict-override">Accept New Rule</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
