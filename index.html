@@ -365,6 +365,10 @@
             .modal-overlay { padding: 10px; }
             .modal-header span { font-size: 0.8rem; }
             .modal-close { font-size: 1.4rem; }
+            .demo-preview-overlay {
+                opacity: 1;
+                pointer-events: auto;
+            }
             .footer { gap: 14px; }
         }
     </style>
@@ -434,7 +438,7 @@
 
         <div class="cta-container">
             <a href="/waitlist.html" class="cta">Join the Waitlist</a>
-            <a href="mailto:welcome@simway.io" class="cta cta-gold">Build the future with us</a>
+            <a href="mailto:welcome@simway.io" class="cta">Build the future with us</a>
         </div>
 
         <div class="partnership">A Sim &amp; Lobster Production.</div>
@@ -447,13 +451,34 @@
         </div>
     </div>
 
+    <!-- Demo Modal -->
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-header">
+            <span>ple • Interactive Demo</span>
+            <button class="modal-close" onclick="closeDemo()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="demoFrame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script>
         function openDemo() {
-            var w = 1200, h = 800;
-            var left = (screen.width - w) / 2;
-            var top = (screen.height - h) / 2;
-            window.open('/demo/', 'pleDemo', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',menubar=no,toolbar=no,location=no,status=no');
+            document.getElementById('demoModal').classList.add('active');
+            document.getElementById('demoFrame').src = '/demo/';
+            document.body.style.overflow = 'hidden';
         }
+        function closeDemo() {
+            document.getElementById('demoModal').classList.remove('active');
+            document.getElementById('demoFrame').src = '';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDemo();
+        });
+        document.getElementById('demoModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDemo();
+        });
     </script>
 </body>
 </html>
