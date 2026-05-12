@@ -3,63 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ple Sandbox - Chaos to Order</title>
+    <title>Ple Sandbox - Free Diagram (v0.5)</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Mermaid for diagram rendering -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
         mermaid.initialize({ startOnLoad: true, theme: 'default' });
     </script>
+    <style>
+        /* V0.5 overrides and additions */
+        .sandbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .sandbox-header h1 {
+            font-size: 1.8rem;
+            margin: 0 0 4px 0;
+        }
+        .sandbox-header .tagline {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .sandbox-badge {
+            display: inline-block;
+            background: #ff4500;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 8px;
+        }
+        .prd-textarea-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .prd-textarea {
+            width: 100%;
+            flex: 1;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #444;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            resize: vertical;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .prd-textarea:focus {
+            border-color: #ff4500;
+        }
+        .prd-textarea::placeholder {
+            color: #666;
+            font-style: italic;
+        }
+        .prd-textarea:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .sandbox-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 0 0 0;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .btn-generate {
+            padding: 10px 20px;
+            background: #ff4500;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            white-space: nowrap;
+        }
+        .btn-generate:hover:not(:disabled) {
+            background: #cc3700;
+        }
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-clear {
+            padding: 10px 16px;
+            background: transparent;
+            color: #aaa;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-clear:hover {
+            border-color: #888;
+            color: #fff;
+        }
+        .sandbox-input-hint {
+            color: #666;
+            font-size: 0.75rem;
+            padding: 6px 0;
+            flex-shrink: 0;
+        }
+        .diagram-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            padding: 20px;
+            text-align: center;
+        }
+        .diagram-state .state-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        .diagram-state .state-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .diagram-state .state-desc {
+            color: #888;
+            font-size: 0.85rem;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+        .diagram-state .state-error-title {
+            color: #ff4444;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .diagram-state .state-error-desc {
+            color: #cc6666;
+            font-size: 0.85rem;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #333;
+            border-top: 3px solid #ff4500;
+            border-radius: 50%;
+            margin-bottom: 12px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        .mermaid-content {
+            display: none;
+        }
+        .mermaid-content.active {
+            display: block;
+        }
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        .search-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 6px 0;
+        }
+        .search-pill {
+            background: #2a2a3e;
+            color: #aaa;
+            border: 1px solid #3a3a4e;
+            border-radius: 12px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .search-pill:hover {
+            background: #ff4500;
+            color: #fff;
+            border-color: #ff4500;
+        }
+        .adm-output-area {
+            overflow: auto;
+            max-height: 400px;
+        }
+        .prd-output-area {
+            overflow: auto;
+            max-height: 400px;
+        }
+        .empty-state-cta {
+            margin-top: 12px;
+            padding: 8px 18px;
+            border: 1px solid #ff4500;
+            background: transparent;
+            color: #ff4500;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .empty-state-cta:hover {
+            background: rgba(255,69,0,0.1);
+        }
+        .lead-capture {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #12121a;
+        }
+        .lead-capture.visible {
+            display: block;
+        }
+        .lead-capture h3 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+        }
+        .lead-capture p {
+            color: #888;
+            font-size: 0.8rem;
+            margin: 0 0 12px 0;
+        }
+        .lead-form {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .lead-form input {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 12px;
+            border: 1px solid #444;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .lead-form input:focus {
+            border-color: #ff4500;
+        }
+        .lead-form button {
+            padding: 10px 20px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lead-form button:hover {
+            background: #ddd;
+        }
+        .lead-success {
+            display: none;
+            color: #4caf50;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 8px 0;
+        }
+        .lead-success.visible {
+            display: block;
+        }
+        .lead-error {
+            display: none;
+            color: #ff4444;
+            font-size: 0.8rem;
+            padding: 6px 0;
+        }
+        .lead-error.visible {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header style="display: flex; justify-content: space-between; align-items: center;">
+        <header class="sandbox-header">
             <div>
-                <h1>🎯 Ple Sandbox</h1>
-                <p>Chaos → Order · Simulated Chat Interface</p>
+                <h1>🎯 Free Diagram <span class="sandbox-badge">v0.5 Beta</span></h1>
+                <p class="tagline">Paste your intent. Get your diagram. No signup required.</p>
             </div>
-
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <select id="versionSelector" onchange="window.location.href=this.value" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #444; font-weight: bold; background-color: #1a1a2e; color: #e0e0e0; cursor: pointer;">
+                    <option value="index.html" selected>v0.5 Free Diagram</option>
+                    <option value="v0.4.html">v0.4 Chaos Demo</option>
+                    <option value="v0.3.html">v0.3 Manifesto (Gold Standard Demo)</option>
+                    <option value="v1.0.html">v1.0 Blueprint Mock</option>
+                </select>
+            </div>
         </header>
 
         <div class="split-screen">
-            <!-- Left Panel: The Chaos / Ingestion (Chat View) -->
+            <!-- Left Panel: PRD Input / Free Diagram Sandbox -->
             <div class="panel left-panel">
                 <div class="panel-header">
-                    <h2>The Chaos / Ingestion</h2>
-                    <p class="hint">Describe your domain in natural conversation</p>
+                    <h2>📝 Your Intent</h2>
+                    <p class="hint">Paste a PRD, user story, or domain description</p>
                 </div>
 
-                <!-- Domain Artifact Bar (shown after first build) -->
-                <div id="artifactBar" class="artifact-bar hidden">
-                    <span class="artifact-bar-label">Artifacts:</span>
-                    <div id="pillsList" class="pills-list"></div>
+                <!-- Quick-fill pills -->
+                <div class="search-pills">
+                    <span class="search-pill" onclick="fillPRD('banking')">🏦 Banking Ledger</span>
+                    <span class="search-pill" onclick="fillPRD('subscription')">📦 Subscription Billing</span>
+                    <span class="search-pill" onclick="fillPRD('food')">🍕 Food Delivery</span>
+                    <span class="search-pill" onclick="fillPRD('health')">🏥 Patient Admission</span>
                 </div>
 
-                <!-- Chat History -->
-                <div id="chatHistory" class="chat-history">
-                    <p class="chat-placeholder">Type a domain intent statement below and hit Send to begin.</p>
+                <!-- PRD Input -->
+                <div class="prd-textarea-container">
+                    <textarea id="prdInput" class="prd-textarea"
+                        placeholder="Paste your Product Requirements Document (PRD), domain intent, or user stories here.&#10;&#10;Example:&#10;# Banking Ledger&#10;&#10;We are building a retail banking ledger system...&#10;## Commands&#10;### OpenAccount&#10;- accountNumber: String&#10;- currency: String&#10;### DepositFunds&#10;- amount: Decimal&#10;### WithdrawFunds&#10;- amount: Decimal&#10;&#10;## Business Rules&#10;- Balance cannot go negative without an overdraft facility&#10;- All transactions must be recorded in the ledger&#10;&#10;## Domain Events&#10;- AccountOpened&#10;- DepositCompleted&#10;- FundsWithdrawn"></textarea>
                 </div>
 
-                <!-- Chat Input Bar (replaces standalone Compile button) -->
-                <div class="chat-input-bar">
-                    <input id="chatInput" type="text" placeholder="e.g. We're building a new retail bank ledger..."
-                           class="chat-input" autocomplete="off" />
-                    <button id="sendBtn" class="btn-chat-send" title="Add to conversation" disabled>Send</button>
-                    <button id="buildItBtn" class="btn-build-it" title="Compile all messages into Visual Contract" disabled>Build It</button>
-                    <button id="newDomainBtn" class="btn-new-domain" title="Start a new domain conversation">+ New Domain</button>
+                <!-- Toolbar -->
+                <div class="sandbox-toolbar">
+                    <button id="generateBtn" class="btn-generate" disabled>🚀 Generate Diagram</button>
+                    <button id="clearBtn" class="btn-clear" onclick="clearInput()">Clear</button>
+                    <span style="flex:1"></span>
+                    <button id="newDomainBtn" class="btn-new-domain" onclick="resetSandbox()" style="display:none;">+ New</button>
+                </div>
+                <div class="sandbox-input-hint">
+                    <span id="charCount">0</span> characters &middot; Paste any domain description for a free visual contract
                 </div>
 
-                <div id="statusMessage" class="status-message"></div>
+                <!-- Lead capture (shown after first successful generation) -->
+                <div id="leadCapture" class="lead-capture">
+                    <h3>🔒 Want to keep this diagram?</h3>
+                    <p>Join the waitlist to save, share, and deploy your generated domain models.</p>
+                    <div class="lead-form">
+                        <input type="email" id="leadEmail" placeholder="Enter your email" autocomplete="email">
+                        <button onclick="captureLead()">Join Waitlist</button>
+                    </div>
+                    <div id="leadSuccess" class="lead-success">✓ You're on the list. We'll be in touch.</div>
+                    <div id="leadError" class="lead-error"></div>
+                </div>
             </div>
 
-            <!-- Right Panel: The Control / Receipt -->
-            <div class="panel right-panel">
+            <!-- Right Panel: Diagram Output -->
+            <div class="panel" style="display:flex;flex-direction:column;">
                 <div class="panel-header">
-                    <h2>The Control / Receipt</h2>
-                    <p class="hint">Generated ADM, PRD & Diagram</p>
+                    <h2>🎨 Your Diagram</h2>
+                    <p class="hint">Generated Domain Model & Visual Contract</p>
                 </div>
-                
-                <!-- Version Navigator (shown after compilation) -->
+
+                <!-- Version Navigator (shown after generation) -->
                 <div id="versionNav" class="version-nav hidden">
                     <label for="versionDropdown" class="version-label">Version:</label>
                     <select id="versionDropdown" class="version-dropdown">
@@ -82,7 +391,7 @@
                     <button class="tab-btn exec-tab hidden" data-tab="event-stream">Event Stream</button>
                 </div>
 
-                <!-- Artifact URL (shown after compilation) -->
+                <!-- Artifact URL (shown after generation) -->
                 <div id="artifactUrlBar" class="artifact-url-bar hidden">
                     <span class="artifact-url-icon">📦</span>
                     <code id="artifactUrlText" class="artifact-url-text"></code>
@@ -90,7 +399,7 @@
                     <span id="artifactUrlMeta" class="artifact-url-meta"></span>
                 </div>
 
-                <!-- Deploy Section (shown after compilation) -->
+                <!-- Deploy Section (shown after generation) -->
                 <div id="deploySection" class="deploy-section hidden">
                     <div class="deploy-bar">
                         <button id="deployBtn" class="btn-deploy">🚀 Deploy to Sandbox</button>
@@ -101,13 +410,22 @@
                 <!-- Diagram Tab -->
                 <div id="diagramTab" class="tab-content active">
                     <div id="mermaidContainer" class="mermaid-container">
-                        <p class="placeholder">Diagram will appear here after compilation</p>
+                        <div id="diagramState" class="diagram-state">
+                            <div class="state-icon">🎯</div>
+                            <div class="state-title">Ready for your intent</div>
+                            <div class="state-desc">Paste a PRD or domain description on the left, then click Generate to see your free domain model diagram.</div>
+                            <button class="empty-state-cta" onclick="fillSampleAndGenerate()">Try a Sample</button>
+                        </div>
+                    </div>
+                    <div id="diagramContent" class="mermaid-content">
+                        <div class="mermaid">
+                        </div>
                     </div>
                 </div>
 
                 <!-- ADM JSON Tab -->
                 <div id="admTab" class="tab-content">
-                    <pre id="admJsonOutput" class="adm-json">
+                    <pre id="admJsonOutput" class="adm-json adm-output-area">
 {
   "domainName": "...",
   "aggregates": [],
@@ -118,7 +436,7 @@
 
                 <!-- Generated PRD Tab -->
                 <div id="prdTab" class="tab-content">
-                    <pre id="prdOutput" class="prd-markdown">PRD will appear here...</pre>
+                    <pre id="prdOutput" class="prd-markdown prd-output-area">Generated PRD will appear here...</pre>
                 </div>
 
                 <!-- Live API Tab -->
@@ -145,18 +463,741 @@
         </div>
     </div>
 
-    <!-- Conflict Resolution Modal (Contradiction UX) -->
-    <div id="conflictOverlay" class="conflict-overlay" style="display:none;">
-        <div class="conflict-modal">
-            <h3>⚠ Architectural Contradiction Detected</h3>
-            <p id="conflictDesc" style="margin-bottom:12px;">Loading…</p>
-            <div class="conflict-actions">
-                <button id="conflictKeepBtn" class="btn btn-conflict-keep">Keep Original Rule</button>
-                <button id="conflictOverrideBtn" class="btn btn-conflict-override">Accept New Rule</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        // ============================================================
+        // Demo v0.5 - Free Diagram Sandbox
+        // ============================================================
 
-    <script src="app.js"></script>
+        // ---- Mock data for each version ----
+        const VERSIONS = {
+            v1: {
+                timestamp: '2026-05-09 14:00',
+                delta: 'Initial domain extraction',
+                diagram: `
+graph TD
+    subgraph BankingLedger["Banking Ledger"]
+        OpenAccount_Command(["Command: OpenAccount"])
+        DepositFunds_Command(["Command: DepositFunds"])
+        WithdrawFunds_Command(["Command: WithdrawFunds"])
+    end
+    OpenAccount_Command --> AccountOpened_Event["Event: AccountOpened"]
+    DepositFunds_Command --> DepositCompleted_Event["Event: DepositCompleted"]
+    WithdrawFunds_Command --> FundsWithdrawn_Event["Event: FundsWithdrawn"]
+
+    classDef command fill:#2563eb,color:#fff,stroke:#2563eb
+    classDef event fill:#16a34a,color:#fff,stroke:#16a34a
+    class OpenAccount_Command,DepositFunds_Command,WithdrawFunds_Command command
+    class AccountOpened_Event,DepositCompleted_Event,FundsWithdrawn_Event event
+`,
+                adm: {
+                    domainName: "BankingLedger",
+                    version: "0.1.0",
+                    aggregates: [
+                        {
+                            name: "BankAccount",
+                            fields: [
+                                { name: "accountNumber", type: "String" },
+                                { name: "currency", type: "String" },
+                                { name: "currentBalance", type: "Decimal" }
+                            ],
+                            commands: [
+                                { name: "OpenAccount", params: { accountNumber: "String", currency: "String" }, from: "Initial", to: "Active" },
+                                { name: "DepositFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "WithdrawFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" }
+                            ],
+                            invariants: [
+                                "currentBalance >= 0 unless OverdraftFacility active"
+                            ],
+                            events: [
+                                { name: "AccountOpened", payload: { accountNumber: "String", currency: "String" } },
+                                { name: "DepositCompleted", payload: { newBalance: "Decimal" } },
+                                { name: "FundsWithdrawn", payload: { newBalance: "Decimal" } }
+                            ]
+                        }
+                    ],
+                    globalEvents: []
+                },
+                prd: "# Banking Ledger v1\n\n## Domain Overview\nInitial banking ledger system with basic account operations.\n\n## Entities\n- **BankAccount**: Core aggregate representing a bank account.\n  - Fields: accountNumber, currency, currentBalance\n\n## Commands\n- **OpenAccount**: Create a new bank account.\n- **DepositFunds**: Deposit money into an account.\n- **WithdrawFunds**: Withdraw money from an account.\n\n## Business Rules\n- Balance cannot go negative without overdraft facility.\n\n## Events\n- **AccountOpened**: Emitted when a new account is created.\n- **DepositCompleted**: Emitted after a successful deposit.\n- **FundsWithdrawn**: Emitted after a successful withdrawal."
+            },
+            v2: {
+                timestamp: '2026-05-09 15:30',
+                delta: '+ OverdraftFacility value object',
+                diagram: `
+graph TD
+    subgraph BankingLedger["Banking Ledger"]
+        OpenAccount_Command(["Command: OpenAccount"])
+        DepositFunds_Command(["Command: DepositFunds"])
+        WithdrawFunds_Command(["Command: WithdrawFunds"])
+        ApplyOverdraft_Command(["Command: ApplyOverdraft"])
+    end
+
+    subgraph BankAccount_Aggregate["BankAccount"]
+        BankAccount_Fields["accountNumber: String<br/>currency: String<br/>currentBalance: Decimal<br/>overdraftLimit: Decimal"]
+    end
+
+    OpenAccount_Command --> AccountOpened_Event["Event: AccountOpened"]
+    DepositFunds_Command --> DepositCompleted_Event["Event: DepositCompleted"]
+    WithdrawFunds_Command --> FundsWithdrawn_Event["Event: FundsWithdrawn"]
+    ApplyOverdraft_Command --> OverdraftApplied_Event["Event: OverdraftApplied"]
+
+    classDef command fill:#2563eb,color:#fff,stroke:#2563eb
+    classDef event fill:#16a34a,color:#fff,stroke:#16a34a
+    classDef aggregate fill:#2d2d5e,color:#e0e0ff,stroke:#4a4a8a,stroke-width:2
+    class BankAccount_Aggregate aggregate
+    class OpenAccount_Command,DepositFunds_Command,WithdrawFunds_Command,ApplyOverdraft_Command command
+    class AccountOpened_Event,DepositCompleted_Event,FundsWithdrawn_Event,OverdraftApplied_Event event
+`,
+                adm: {
+                    domainName: "BankingLedger",
+                    version: "0.2.0",
+                    aggregates: [
+                        {
+                            name: "BankAccount",
+                            fields: [
+                                { name: "accountNumber", type: "String" },
+                                { name: "currency", type: "String" },
+                                { name: "currentBalance", type: "Decimal" },
+                                { name: "overdraftLimit", type: "Decimal" }
+                            ],
+                            commands: [
+                                { name: "OpenAccount", params: { accountNumber: "String", currency: "String" }, from: "Initial", to: "Active" },
+                                { name: "DepositFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "WithdrawFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "ApplyOverdraft", params: { limit: "Decimal" }, from: "Active", to: "Active" }
+                            ],
+                            invariants: [
+                                "currentBalance >= -overdraftLimit",
+                                "overdraftLimit >= 0"
+                            ],
+                            events: [
+                                { name: "AccountOpened", payload: { accountNumber: "String", currency: "String" } },
+                                { name: "DepositCompleted", payload: { newBalance: "Decimal" } },
+                                { name: "FundsWithdrawn", payload: { newBalance: "Decimal" } },
+                                { name: "OverdraftApplied", payload: { limit: "Decimal" } }
+                            ]
+                        }
+                    ],
+                    globalEvents: []
+                },
+                prd: "# Banking Ledger v2\n\n## Domain Overview\nAdded overdraft facility support.\n\n## Entities\n- **BankAccount**: Core aggregate.\n  - Fields: accountNumber, currency, currentBalance, overdraftLimit\n\n## Commands\n- **OpenAccount**: Create a new bank account.\n- **DepositFunds**: Deposit money.\n- **WithdrawFunds**: Withdraw money.\n- **ApplyOverdraft**: Set overdraft limit.\n\n## Business Rules\n- Balance cannot exceed overdraft limit.\n- Overdraft limit must be non-negative.\n\n## Events\n- **AccountOpened**, **DepositCompleted**, **FundsWithdrawn**, **OverdraftApplied**."
+            },
+            v3: {
+                timestamp: '2026-05-10 09:00',
+                delta: '+ TransferBetweenAccounts, invariants',
+                diagram: `
+graph TD
+    subgraph BankingLedger["Banking Ledger"]
+        OpenAccount_Command(["Command: OpenAccount"])
+        DepositFunds_Command(["Command: DepositFunds"])
+        WithdrawFunds_Command(["Command: WithdrawFunds"])
+        TransferFunds_Command(["Command: TransferFunds"])
+    end
+
+    subgraph Compliance["Compliance Rules"]
+        Inv_KYC["{{Invariant: KYC Required}}"]
+        Inv_AML["{{Invariant: AML Check}}"]
+        Inv_Balance["{{Invariant: Minimum Balance}}"]
+    end
+
+    OpenAccount_Command --> AccountOpened_Event["Event: AccountOpened"]
+    DepositFunds_Command --> DepositCompleted_Event["Event: DepositCompleted"]
+    WithdrawFunds_Command --> FundsWithdrawn_Event["Event: FundsWithdrawn"]
+    TransferFunds_Command --> TransferCompleted_Event["Event: TransferCompleted"]
+
+    classDef command fill:#2563eb,color:#fff,stroke:#2563eb
+    classDef event fill:#16a34a,color:#fff,stroke:#16a34a
+    classDef invariant fill:#f59e0b,color:#000,stroke:#f59e0b
+    class OpenAccount_Command,DepositFunds_Command,WithdrawFunds_Command,TransferFunds_Command command
+    class AccountOpened_Event,DepositCompleted_Event,FundsWithdrawn_Event,TransferCompleted_Event event
+    class Inv_KYC,Inv_AML,Inv_Balance invariant
+`,
+                adm: {
+                    domainName: "BankingLedger",
+                    version: "0.3.0",
+                    aggregates: [
+                        {
+                            name: "BankAccount",
+                            fields: [
+                                { name: "accountNumber", type: "String" },
+                                { name: "currency", type: "String" },
+                                { name: "currentBalance", type: "Decimal" }
+                            ],
+                            commands: [
+                                { name: "OpenAccount", params: { accountNumber: "String", currency: "String" }, from: "Initial", to: "Active" },
+                                { name: "DepositFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "WithdrawFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "TransferFunds", params: { toAccount: "String", amount: "Decimal" }, from: "Active", to: "Active" }
+                            ],
+                            invariants: [
+                                "currentBalance >= 0",
+                                "KYC verification required for all accounts",
+                                "AML check for transfers over 10000",
+                                "minimum balance 100 for active accounts"
+                            ],
+                            events: [
+                                { name: "AccountOpened", payload: { accountNumber: "String", currency: "String" } },
+                                { name: "DepositCompleted", payload: { newBalance: "Decimal" } },
+                                { name: "FundsWithdrawn", payload: { newBalance: "Decimal" } },
+                                { name: "TransferCompleted", payload: { fromAccount: "String", toAccount: "String", amount: "Decimal" } }
+                            ]
+                        }
+                    ],
+                    globalEvents: []
+                },
+                prd: "# Banking Ledger v3\n\n## Domain Overview\nAdded compliance rules and inter-account transfers.\n\n## Entities\n- **BankAccount**: Fields remain.\n\n## Commands\n- **TransferFunds**: Transfer money between accounts.\n\n## Business Rules\n- KYC verification required.\n- AML check for transfers over 10,000.\n- Minimum balance of 100 for active accounts.\n\n## Events\n- **TransferCompleted**: Record of completed transfers."
+            },
+            v4: {
+                timestamp: '2026-05-11 14:00',
+                delta: '+ AccountType enum, CloseAccount',
+                diagram: `
+graph TD
+    subgraph BankingLedger["Banking Ledger v4"]
+        OpenAccount_Command(["Command: OpenAccount"])
+        DepositFunds_Command(["Command: DepositFunds"])
+        WithdrawFunds_Command(["Command: WithdrawFunds"])
+        TransferFunds_Command(["Command: TransferFunds"])
+        CloseAccount_Command(["Command: CloseAccount"])
+    end
+
+    OpenAccount_Command --> AccountOpened_Event["Event: AccountOpened"]
+    DepositFunds_Command --> DepositCompleted_Event["Event: DepositCompleted"]
+    WithdrawFunds_Command --> FundsWithdrawn_Event["Event: FundsWithdrawn"]
+    TransferFunds_Command --> TransferCompleted_Event["Event: TransferCompleted"]
+    CloseAccount_Command --> AccountClosed_Event["Event: AccountClosed"]
+
+    subgraph AccountTypes["Account Types"]
+        Checking["Checking"]
+        Savings["Savings"]
+        Business["Business"]
+    end
+
+    classDef command fill:#2563eb,color:#fff,stroke:#2563eb
+    classDef event fill:#16a34a,color:#fff,stroke:#16a34a
+    classDef type fill:#7c3aed,color:#fff,stroke:#7c3aed
+    class OpenAccount_Command,DepositFunds_Command,WithdrawFunds_Command,TransferFunds_Command,CloseAccount_Command command
+    class AccountOpened_Event,DepositCompleted_Event,FundsWithdrawn_Event,TransferCompleted_Event,AccountClosed_Event event
+    class Checking,Savings,Business type
+`,
+                adm: {
+                    domainName: "BankingLedger",
+                    version: "0.4.0",
+                    aggregates: [
+                        {
+                            name: "BankAccount",
+                            fields: [
+                                { name: "accountNumber", type: "String" },
+                                { name: "currency", type: "String" },
+                                { name: "currentBalance", type: "Decimal" },
+                                { name: "accountType", type: "AccountType" }
+                            ],
+                            valueObjects: [
+                                { name: "AccountType", values: ["Checking", "Savings", "Business"] }
+                            ],
+                            commands: [
+                                { name: "OpenAccount", params: { accountNumber: "String", currency: "String", accountType: "AccountType" }, from: "Initial", to: "Active" },
+                                { name: "DepositFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "WithdrawFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "TransferFunds", params: { toAccount: "String", amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "CloseAccount", params: { reason: "String" }, from: "Active", to: "Closed" }
+                            ],
+                            invariants: [
+                                "Savings accounts: max 6 withdrawals per month",
+                                "Business accounts: min balance 1000",
+                                "Cannot close account with negative balance"
+                            ],
+                            events: [
+                                { name: "AccountOpened", payload: { accountNumber: "String", currency: "String", accountType: "AccountType" } },
+                                { name: "DepositCompleted", payload: { newBalance: "Decimal" } },
+                                { name: "FundsWithdrawn", payload: { newBalance: "Decimal" } },
+                                { name: "TransferCompleted", payload: { fromAccount: "String", toAccount: "String", amount: "Decimal" } },
+                                { name: "AccountClosed", payload: { accountNumber: "String", reason: "String" } }
+                            ]
+                        }
+                    ],
+                    globalEvents: []
+                },
+                prd: "# Banking Ledger v4\n\n## Domain Overview\nAdded account types and account closure.\n\n## Entities\n- **BankAccount**: Added accountType enum field.\n\n## Value Objects\n- **AccountType**: Checking, Savings, Business\n\n## Commands\n- **CloseAccount**: Close an account with a reason.\n\n## Business Rules\n- Savings: max 6 withdrawals/month.\n- Business: min balance 1000.\n- Cannot close with negative balance.\n\n## Events\n- **AccountClosed**: Record of account closure."
+            },
+            v5: {
+                timestamp: '2026-05-12 10:00',
+                delta: '+ MonthlyStatement, AuditTrail + Free Diagram',
+                diagram: `
+graph TD
+    subgraph BankingLedger["Banking Ledger v5"]
+        OpenAccount_Command(["Command: OpenAccount"])
+        DepositFunds_Command(["Command: DepositFunds"])
+        WithdrawFunds_Command(["Command: WithdrawFunds"])
+        TransferFunds_Command(["Command: TransferFunds"])
+        CloseAccount_Command(["Command: CloseAccount"])
+        GenerateStatement_Command(["Command: GenerateStatement"])
+    end
+
+    OpenAccount_Command --> AccountOpened_Event["Event: AccountOpened"]
+    DepositFunds_Command --> DepositCompleted_Event["Event: DepositCompleted"]
+    WithdrawFunds_Command --> FundsWithdrawn_Event["Event: FundsWithdrawn"]
+    TransferFunds_Command --> TransferCompleted_Event["Event: TransferCompleted"]
+    CloseAccount_Command --> AccountClosed_Event["Event: AccountClosed"]
+    GenerateStatement_Command --> StatementGenerated_Event["Event: StatementGenerated"]
+
+    subgraph AuditTrail["Audit Trail"]
+        Audit_Log[("Audit Log<br/>Append-Only")]
+    end
+
+    DepositCompleted_Event -.-> Audit_Log
+    FundsWithdrawn_Event -.-> Audit_Log
+    TransferCompleted_Event -.-> Audit_Log
+
+    classDef command fill:#2563eb,color:#fff,stroke:#2563eb
+    classDef event fill:#16a34a,color:#fff,stroke:#16a34a
+    classDef audit fill:#9333ea,color:#fff,stroke:#9333ea
+    class OpenAccount_Command,DepositFunds_Command,WithdrawFunds_Command,TransferFunds_Command,CloseAccount_Command,GenerateStatement_Command command
+    class AccountOpened_Event,DepositCompleted_Event,FundsWithdrawn_Event,TransferCompleted_Event,AccountClosed_Event,StatementGenerated_Event event
+    class Audit_Log audit
+`,
+                adm: {
+                    domainName: "BankingLedger",
+                    version: "0.5.0",
+                    aggregates: [
+                        {
+                            name: "BankAccount",
+                            fields: [
+                                { name: "accountNumber", type: "String" },
+                                { name: "currency", type: "String" },
+                                { name: "currentBalance", type: "Decimal" },
+                                { name: "accountType", type: "AccountType" },
+                                { name: "monthlyStatement", type: "Statement" }
+                            ],
+                            valueObjects: [
+                                { name: "AccountType", values: ["Checking", "Savings", "Business"] },
+                                { name: "Statement", fields: { period: "String", transactions: "Transaction[]", openingBalance: "Decimal", closingBalance: "Decimal" } }
+                            ],
+                            commands: [
+                                { name: "OpenAccount", params: { accountNumber: "String", currency: "String", accountType: "AccountType" }, from: "Initial", to: "Active" },
+                                { name: "DepositFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "WithdrawFunds", params: { amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "TransferFunds", params: { toAccount: "String", amount: "Decimal" }, from: "Active", to: "Active" },
+                                { name: "CloseAccount", params: { reason: "String" }, from: "Active", to: "Closed" },
+                                { name: "GenerateStatement", params: { period: "String" }, from: "Active", to: "Active" }
+                            ],
+                            invariants: [
+                                "Savings accounts: max 6 withdrawals per month",
+                                "Business accounts: min balance 1000",
+                                "Cannot close account with negative balance",
+                                "All transactions must be audited"
+                            ],
+                            events: [
+                                { name: "AccountOpened", payload: { accountNumber: "String", currency: "String", accountType: "AccountType" } },
+                                { name: "DepositCompleted", payload: { newBalance: "Decimal" } },
+                                { name: "FundsWithdrawn", payload: { newBalance: "Decimal" } },
+                                { name: "TransferCompleted", payload: { fromAccount: "String", toAccount: "String", amount: "Decimal" } },
+                                { name: "AccountClosed", payload: { accountNumber: "String", reason: "String" } },
+                                { name: "StatementGenerated", payload: { period: "String", totalTransactions: "Number" } }
+                            ]
+                        }
+                    ],
+                    globalEvents: ["AuditTrailLogged"]
+                },
+                prd: "# Banking Ledger v5\n\n## Domain Overview\nFull-featured banking ledger with statements and audit trail.\n\n## Entities\n- **BankAccount**: Complete aggregate with all features.\n\n## Value Objects\n- **AccountType**: Checking, Savings, Business\n- **Statement**: period, transactions[], openingBalance, closingBalance\n\n## Commands\n- **GenerateStatement**: Generate monthly account statement.\n\n## Business Rules\n- All transactions audited.\n- Account-specific limits enforced.\n\n## Events\n- **StatementGenerated**: Monthly statement ready.\n- **AuditTrailLogged**: Global audit event.\n\n## Free Diagram\nThis model was generated from your text using the ple deterministic intent engine."
+            }
+        };
+
+        // ---- PRD samples ----
+        const PRD_SAMPLES = {
+            banking: `# Banking Ledger
+
+We are building a retail banking ledger system for our Fintech platform.
+
+## Core Entities
+- **BankAccount**: Represents a customer bank account.
+  - Fields: accountNumber (String), currency (String), currentBalance (Decimal), accountType (AccountType)
+
+## Value Objects
+- **AccountType**: Checking, Savings, Business
+
+## Commands
+- **OpenAccount(accountNumber, currency, accountType)**: Create a new bank account.
+- **DepositFunds(amount)**: Deposit money into an account.
+- **WithdrawFunds(amount)**: Withdraw money from an account.
+- **TransferFunds(toAccount, amount)**: Transfer between accounts.
+- **CloseAccount(reason)**: Close an existing account.
+- **GenerateStatement(period)**: Generate a monthly statement.
+
+## Business Rules
+- Savings accounts: max 6 withdrawals per month.
+- Business accounts: minimum balance of 1,000.
+- Cannot close an account with a negative balance.
+- All transactions must be recorded in the audit trail.
+
+## Domain Events
+- **AccountOpened(accountNumber, currency, accountType)**
+- **DepositCompleted(newBalance)**
+- **FundsWithdrawn(newBalance)**
+- **TransferCompleted(fromAccount, toAccount, amount)**
+- **AccountClosed(accountNumber, reason)**
+- **StatementGenerated(period, totalTransactions)`,
+
+            subscription: `# Subscription Billing System
+
+A subscription billing engine for SaaS products.
+
+## Core Entities
+- **Subscription**: A customer's subscription to a plan.
+  - Fields: customerId (String), planId (String), status (SubscriptionStatus), billingCycle (String)
+
+## Value Objects
+- **SubscriptionStatus**: Active, Paused, Cancelled, Expired
+- **BillingCycle**: Monthly, Quarterly, Annual
+
+## Commands
+- **CreateSubscription(customerId, planId, billingCycle)**: Start a new subscription.
+- **PauseSubscription(reason)**: Temporarily pause billing.
+- **ResumeSubscription()**: Resume a paused subscription.
+- **CancelSubscription(reason)**: Cancel at end of billing period.
+- **ChangePlan(newPlanId)**: Upgrade or downgrade plan.
+
+## Business Rules
+- Cannot pause an already paused subscription.
+- Cannot cancel an expired subscription.
+- Plan changes take effect at next billing cycle.
+- Free trials cannot be paused.
+
+## Domain Events
+- **SubscriptionCreated(customerId, planId)**
+- **SubscriptionPaused(reason)**
+- **SubscriptionResumed()**
+- **SubscriptionCancelled(reason, effectiveDate)`
+        };
+
+        // ---- State ----
+        let currentState = 'idle'; // idle | loading | success | error
+        let currentVersion = 'v5';
+        let currentDiagramCode = null;
+        let currentAdmData = null;
+        let currentPrdText = null;
+        let generatedOnce = false;
+
+        // ---- DOM refs ----
+        const prdInput = document.getElementById('prdInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const diagramState = document.getElementById('diagramState');
+        const diagramContent = document.getElementById('diagramContent');
+        const mermaidContainer = document.getElementById('mermaidContainer');
+        const admOutput = document.getElementById('admJsonOutput');
+        const prdOutput = document.getElementById('prdOutput');
+        const versionNav = document.getElementById('versionNav');
+        const versionDropdown = document.getElementById('versionDropdown');
+        const versionTimestamp = document.getElementById('versionTimestamp');
+        const versionDelta = document.getElementById('versionDelta');
+        const artifactUrlBar = document.getElementById('artifactUrlBar');
+        const artifactUrlText = document.getElementById('artifactUrlText');
+        const artifactUrlMeta = document.getElementById('artifactUrlMeta');
+        const artifactUrlCopyBtn = document.getElementById('artifactUrlCopyBtn');
+        const deploySection = document.getElementById('deploySection');
+        const deployBtn = document.getElementById('deployBtn');
+        const deployStatus = document.getElementById('deployStatus');
+        const leadCapture = document.getElementById('leadCapture');
+        const leadEmail = document.getElementById('leadEmail');
+        const leadSuccess = document.getElementById('leadSuccess');
+        const leadError = document.getElementById('leadError');
+        const charCount = document.getElementById('charCount');
+        const newDomainBtn = document.getElementById('newDomainBtn');
+
+        // ---- Input handling ----
+        prdInput.addEventListener('input', function() {
+            const len = this.value.length;
+            charCount.textContent = len;
+            generateBtn.disabled = len === 0 || currentState === 'loading';
+            if (len > 0 && currentState === 'idle') {
+                diagramState.querySelector('.state-desc').textContent = 'Ready to generate. Click the button to create your domain model.';
+            }
+        });
+
+        generateBtn.addEventListener('click', generateDiagram);
+
+        // ---- Tab handling ----
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(function(tc) { tc.classList.remove('active'); });
+                document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+            });
+        });
+
+        // ---- Version dropdown ----
+        versionDropdown.addEventListener('change', function() {
+            const ver = this.value;
+            currentVersion = ver;
+            const data = VERSIONS[ver];
+            if (data) {
+                versionTimestamp.textContent = data.timestamp;
+                versionDelta.textContent = data.delta;
+                renderVersion(ver);
+            }
+        });
+
+        // ---- Artifact URL copy ----
+        artifactUrlCopyBtn.addEventListener('click', function() {
+            const text = artifactUrlText.textContent;
+            navigator.clipboard.writeText(text).catch(function(e) {
+                // fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            });
+            this.textContent = '✅';
+            setTimeout(function() { artifactUrlCopyBtn.textContent = '📋'; }, 1500);
+        });
+
+        // ---- Deploy ----
+        let deployed = false;
+
+        deployBtn.addEventListener('click', function() {
+            if (!deployed) {
+                deployed = true;
+                deployStatus.textContent = '● Deployed';
+                deployStatus.style.color = '#4caf50';
+                deployBtn.textContent = '🔴 Stop Sandbox';
+                showExecTabs();
+            } else {
+                deployed = false;
+                deployStatus.textContent = '○ Not Deployed';
+                deployStatus.style.color = '#888';
+                deployBtn.textContent = '🚀 Deploy to Sandbox';
+                hideExecTabs();
+            }
+        });
+
+        // ---- Helpers ----
+        function showExecTabs() {
+            document.querySelectorAll('.exec-tab').forEach(function(el) {
+                el.classList.remove('hidden');
+            });
+        }
+
+        function hideExecTabs() {
+            document.querySelectorAll('.exec-tab').forEach(function(el) {
+                el.classList.add('hidden');
+            });
+        }
+
+        function fillPRD(type) {
+            const sample = PRD_SAMPLES[type];
+            if (sample) {
+                prdInput.value = sample;
+                charCount.textContent = sample.length;
+                generateBtn.disabled = false;
+                if (currentState === 'idle') {
+                    diagramState.querySelector('.state-desc').textContent = 'Ready to generate. Click the button to create your domain model.';
+                }
+                prdInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        function clearInput() {
+            prdInput.value = '';
+            charCount.textContent = '0';
+            generateBtn.disabled = true;
+            if (currentState === 'idle') {
+                resetIdleState();
+            }
+        }
+
+        function resetIdleState() {
+            currentState = 'idle';
+            diagramState.style.display = 'flex';
+            diagramContent.classList.remove('active');
+            diagramContent.querySelector('.mermaid').innerHTML = '';
+            diagramState.querySelector('.state-icon').textContent = '🎯';
+            diagramState.querySelector('.state-title').textContent = 'Ready for your intent';
+            diagramState.querySelector('.state-desc').textContent = 'Paste a PRD or domain description on the left, then click Generate to see your free domain model diagram.';
+            const cta = diagramState.querySelector('.empty-state-cta');
+            if (!cta) {
+                const newCta = document.createElement('button');
+                newCta.className = 'empty-state-cta';
+                newCta.textContent = 'Try a Sample';
+                newCta.onclick = fillSampleAndGenerate;
+                diagramState.appendChild(newCta);
+            }
+            generateBtn.disabled = true;
+            newDomainBtn.style.display = 'none';
+            versionNav.classList.add('hidden');
+            artifactUrlBar.classList.add('hidden');
+            deploySection.classList.add('hidden');
+            leadCapture.classList.remove('visible');
+        }
+
+        function fillSampleAndGenerate() {
+            fillPRD('banking');
+            setTimeout(generateDiagram, 300);
+        }
+
+        function renderVersion(ver) {
+            const data = VERSIONS[ver];
+            if (!data) return;
+
+            // Render diagram
+            if (data.diagram) {
+                currentDiagramCode = data.diagram;
+                const mermaidEl = diagramContent.querySelector('.mermaid');
+                mermaidEl.innerHTML = data.diagram;
+                diagramState.style.display = 'none';
+                diagramContent.classList.add('active');
+                try {
+                    mermaid.run({ nodes: [mermaidEl] });
+                } catch(e) {
+                    // Mermaid rendering handled implicitly via content
+                }
+            }
+
+            // Render ADM
+            if (data.adm) {
+                currentAdmData = data.adm;
+                admOutput.textContent = JSON.stringify(data.adm, null, 2);
+            }
+
+            // Render PRD
+            if (data.prd) {
+                currentPrdText = data.prd;
+                prdOutput.textContent = data.prd;
+            }
+
+            // Update artifact URL
+            const verNum = ver.replace('v', '');
+            artifactUrlText.textContent = 'ghcr.io/ple/banking-ledger:v' + verNum;
+            artifactUrlMeta.textContent = verNum + '.0.0 · 1.2 MB';
+
+            // Update timestamps
+            versionTimestamp.textContent = data.timestamp;
+            versionDelta.textContent = data.delta;
+        }
+
+        function generateDiagram() {
+            const text = prdInput.value.trim();
+            if (!text) return;
+
+            // Transition to loading
+            currentState = 'loading';
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generating...';
+            prdInput.disabled = true;
+
+            diagramState.style.display = 'flex';
+            diagramContent.classList.remove('active');
+            diagramState.querySelector('.state-icon').innerHTML = '<div class="loading-spinner"></div>';
+            diagramState.querySelector('.state-title').textContent = 'Analyzing your intent...';
+            diagramState.querySelector('.state-desc').textContent = 'Extracting entities, commands, events, and business rules.';
+            const cta = diagramState.querySelector('.empty-state-cta');
+            if (cta) cta.style.display = 'none';
+
+            // Simulate processing delay (like an LLM call)
+            setTimeout(function() {
+                // Use the v5 data as the mock output
+                const data = VERSIONS.v5;
+                currentVersion = 'v5';
+
+                // Render
+                renderVersion('v5');
+
+                // Show post-generation UI
+                versionNav.classList.remove('hidden');
+                versionDropdown.value = 'v5';
+                versionTimestamp.textContent = data.timestamp;
+                versionDelta.textContent = data.delta;
+
+                artifactUrlBar.classList.remove('hidden');
+                deploySection.classList.remove('hidden');
+
+                // Show lead capture
+                if (!generatedOnce) {
+                    leadCapture.classList.add('visible');
+                }
+                generatedOnce = true;
+                newDomainBtn.style.display = 'inline-block';
+
+                // Transition to success
+                currentState = 'success';
+                generateBtn.textContent = '🚀 Generate Diagram';
+                generateBtn.disabled = false;
+                prdInput.disabled = false;
+
+                // Update state description
+                diagramState.querySelector('.state-title').textContent = '✅ Diagram Generated';
+                diagramState.querySelector('.state-desc').textContent = 'Your domain model is ready. Explore the tabs below.';
+                if (cta) cta.style.display = 'none';
+
+            }, 2500 + Math.random() * 1500);
+        }
+
+        function resetSandbox() {
+            leadCapture.classList.remove('visible');
+            clearInput();
+            resetIdleState();
+            currentState = 'idle';
+            generatedOnce = false;
+            versionNav.classList.add('hidden');
+            artifactUrlBar.classList.add('hidden');
+            deploySection.classList.add('hidden');
+            deployed = false;
+            deployStatus.textContent = '○ Not Deployed';
+            deployStatus.style.color = '#888';
+            deployBtn.textContent = '🚀 Deploy to Sandbox';
+            hideExecTabs();
+            generateBtn.textContent = '🚀 Generate Diagram';
+            generateBtn.disabled = true;
+            prdInput.disabled = false;
+            prdInput.value = '';
+            charCount.textContent = '0';
+        }
+
+        function captureLead() {
+            const email = leadEmail.value.trim();
+            leadError.classList.remove('visible');
+            leadSuccess.classList.remove('visible');
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                leadError.textContent = 'Please enter a valid email address.';
+                leadError.classList.add('visible');
+                return;
+            }
+
+            // Simulate API call
+            leadEmail.disabled = true;
+            leadEmail.nextElementSibling.disabled = true;
+            leadEmail.nextElementSibling.textContent = 'Submitting...';
+
+            setTimeout(function() {
+                leadSuccess.classList.add('visible');
+                leadEmail.value = '';
+                leadEmail.disabled = false;
+                leadEmail.nextElementSibling.disabled = false;
+                leadEmail.nextElementSibling.textContent = 'Join Waitlist';
+                leadError.classList.remove('visible');
+                leadCapture.querySelector('h3').textContent = '✅ You\'re on the list!';
+                leadCapture.querySelector('p').textContent = 'We\'ll notify you when ple enters public alpha.';
+                leadEmail.style.display = 'none';
+                leadEmail.nextElementSibling.style.display = 'none';
+            }, 800);
+        }
+
+        // ---- Keyboard shortcuts ----
+        prdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                if (!generateBtn.disabled) generateDiagram();
+            }
+        });
+
+        // ---- Init ----
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure tab state consistency
+            document.querySelectorAll('.tab-content').forEach(function(tc) { tc.classList.remove('active'); });
+            document.getElementById('diagramTab').classList.add('active');
+        });
+    </script>
 </body>
 </html>
