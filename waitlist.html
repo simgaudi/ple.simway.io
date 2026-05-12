@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ple | Get Early Access</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        .waitlist-container {
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #0a0a0a;
+        }
+        .waitlist-container h1 {
+            font-size: 2rem;
+            margin: 0 0 8px 0;
+            letter-spacing: -1px;
+        }
+        .waitlist-container .subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 24px;
+        }
+        .waitlist-container p {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .waitlist-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .waitlist-form input[type="email"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 16px;
+            border: 1px solid #444;
+            background: #111;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .waitlist-form input[type="email"]:focus {
+            border-color: #ff4500;
+        }
+        .waitlist-form input[type="email"]::placeholder {
+            color: #555;
+        }
+        .waitlist-form button {
+            padding: 14px 28px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .waitlist-form button:hover {
+            background: #ddd;
+        }
+        .waitlist-form button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .waitlist-success {
+            display: none;
+            color: #4caf50;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 0;
+            margin-top: 16px;
+        }
+        .waitlist-success.visible {
+            display: block;
+        }
+        .waitlist-error {
+            display: none;
+            color: #ff4444;
+            font-size: 0.85rem;
+            padding: 8px 0;
+            margin-top: 8px;
+        }
+        .waitlist-error.visible {
+            display: block;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="waitlist-container">
+        <h1>🔒 Get Early Access</h1>
+        <div class="subtitle">Join the ple waitlist</div>
+        <p>
+            Want to save, share, and deploy your generated models? Join the waitlist for early access to the full ple platform — including persistent storage, team collaboration, and live API deployment.
+        </p>
+        <div id="waitlistForm" class="waitlist-form">
+            <input type="email" id="waitlistEmail" placeholder="Enter your email" autocomplete="email">
+            <button type="button" id="waitlistBtn">Join the Waitlist</button>
+        </div>
+        <div id="waitlistSuccess" class="waitlist-success">✓ You're on the list. We'll reach out when ple enters private beta.</div>
+        <div id="waitlistError" class="waitlist-error"></div>
+        <a href="/" class="back-link">← Back to ple</a>
+    </div>
+
+    <script>
+        document.getElementById('waitlistBtn').addEventListener('click', function() {
+            var email = document.getElementById('waitlistEmail').value.trim();
+            var error = document.getElementById('waitlistError');
+            var success = document.getElementById('waitlistSuccess');
+            var btn = this;
+            var form = document.getElementById('waitlistForm');
+            
+            error.classList.remove('visible');
+            success.classList.remove('visible');
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                error.textContent = 'Please enter a valid email address.';
+                error.classList.add('visible');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            setTimeout(function() {
+                success.classList.add('visible');
+                form.style.display = 'none';
+            }, 800);
+        });
+
+        document.getElementById('waitlistEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('waitlistBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>

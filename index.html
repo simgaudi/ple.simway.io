@@ -436,22 +436,17 @@
 
         <div class="status">v0.5 Demo is Live. Join the Waitlist for Alpha access.</div>
 
-        <!-- Waitlist Section -->
-        <div class="waitlist-section" id="waitlist">
+        <!-- Waitlist CTA -->
+        <div class="waitlist-section">
             <h2>🔒 Get Early Access</h2>
             <p>
                 Want to save, share, and deploy your generated models? Join the waitlist for early access to the full ple platform — including persistent storage, team collaboration, and live API deployment.
             </p>
-            <div class="waitlist-form" id="waitlistForm">
-                <input type="email" id="waitlistEmail" placeholder="Enter your email" autocomplete="email">
-                <button onclick="joinWaitlist()">Join the Waitlist</button>
-            </div>
-            <div id="waitlistSuccess" class="waitlist-success">✓ You're on the list. We'll reach out when ple enters private beta.</div>
-            <div id="waitlistError" class="waitlist-error"></div>
+            <a href="/waitlist.html" class="demo-launch-btn">Join the Waitlist</a>
         </div>
 
         <div class="cta-container">
-            <a href="#waitlist" class="cta">Join the Waitlist</a>
+            <a href="/waitlist.html" class="cta">Join the Waitlist</a>
             <a href="mailto:welcome@simway.io" class="cta cta-gold">Build the future with us</a>
         </div>
 
@@ -471,33 +466,6 @@
             var left = (screen.width - w) / 2;
             var top = (screen.height - h) / 2;
             window.open('/demo/', 'pleDemo', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',menubar=no,toolbar=no,location=no,status=no');
-        }
-
-        function joinWaitlist() {
-            var email = document.getElementById('waitlistEmail').value.trim();
-            var error = document.getElementById('waitlistError');
-            var success = document.getElementById('waitlistSuccess');
-            var btn = document.querySelector('#waitlistForm button');
-            
-            error.classList.remove('visible');
-            success.classList.remove('visible');
-
-            if (!email || !email.includes('@') || !email.includes('.')) {
-                error.textContent = 'Please enter a valid email address.';
-                error.classList.add('visible');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = 'Submitting...';
-
-            setTimeout(function() {
-                success.classList.add('visible');
-                document.getElementById('waitlistEmail').value = '';
-                btn.disabled = false;
-                btn.textContent = 'Join the Waitlist';
-                document.getElementById('waitlistForm').style.display = 'none';
-            }, 800);
         }
     </script>
 </body>
