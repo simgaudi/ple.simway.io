@@ -218,114 +218,100 @@
             line-height: 1.6;
             margin-bottom: 30px;
         }
-        .demo-launch-btn {
-            display: inline-block;
-            padding: 16px 36px;
-            background: #ff4500;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s ease;
-        }
-        .demo-launch-btn:hover {
-            background: #cc3700;
-        }
-
-        /* Waitlist Section */
-        .waitlist-section {
-            margin: 60px auto;
-            padding: 40px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            max-width: 500px;
+        .demo-preview {
+            width: 100%;
+            height: 220px;
             background: #0a0a0a;
+            border: 1px solid #333;
+            display: block;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            text-decoration: none;
         }
-        .waitlist-section h2 {
-            font-size: 1.6rem;
-            margin-top: 0;
-            letter-spacing: -1px;
-        }
-        .waitlist-section p {
-            color: #888;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 24px;
-        }
-        .waitlist-form {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .waitlist-form input {
-            flex: 1;
-            min-width: 200px;
-            padding: 14px 16px;
-            border: 1px solid #444;
-            background: #111;
-            color: #fff;
-            border-radius: 4px;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-        .waitlist-form input:focus {
+        .demo-preview:hover {
             border-color: #ff4500;
         }
-        .waitlist-form input::placeholder {
-            color: #555;
+        .demo-preview img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
         }
-        .waitlist-form button {
-            padding: 14px 28px;
-            background: #fff;
-            color: #000;
-            border: none;
+        .demo-preview-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        .demo-preview:hover .demo-preview-overlay {
+            opacity: 1;
+        }
+        .demo-preview-overlay span {
+            padding: 12px 24px;
+            border: 2px solid #ff4500;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
             border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
+            background: rgba(255,69,0,0.15);
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+        .modal-header span {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
             cursor: pointer;
-            transition: background 0.2s;
-            white-space: nowrap;
+            padding: 0 8px;
+            line-height: 1;
+            transition: color 0.2s;
         }
-        .waitlist-form button:hover {
-            background: #ddd;
+        .modal-close:hover {
+            color: #ff4500;
         }
-        .waitlist-form button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .modal-body {
+            flex: 1;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
         }
-        .waitlist-success {
-            display: none;
-            color: #4caf50;
-            font-size: 1rem;
-            font-weight: bold;
-            padding: 12px 0;
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
         }
-        .waitlist-success.visible {
-            display: block;
-        }
-        .waitlist-error {
-            display: none;
-            color: #ff4444;
-            font-size: 0.85rem;
-            padding: 8px 0;
-        }
-        .waitlist-error.visible {
-            display: block;
-        }
-
-        /* Overlay window hint */
-        .overlay-hint {
-            font-size: 0.8rem;
-            color: #555;
-            margin-top: 8px;
-        }
-
         @media (max-width: 768px) {
             h1 { font-size: 3rem; }
             .subtitle { font-size: 1rem; letter-spacing: 1px; }
@@ -347,8 +333,7 @@
             .demo-section { margin: 60px auto; padding: 24px; }
             .demo-section h2 { font-size: 1.5rem; }
             .demo-section p { font-size: 0.95rem; }
-            .waitlist-section { margin: 40px auto; padding: 24px; }
-            .waitlist-section h2 { font-size: 1.3rem; }
+            .demo-preview { height: 160px; }
             .cta { padding: 12px 24px; font-size: 1rem; }
             .footer { gap: 20px; }
         }
@@ -372,12 +357,14 @@
             .label-learning .vertex-desc { font-size: 0.6rem; }
             .demo-section { margin: 40px auto; padding: 20px; }
             .demo-section h2 { font-size: 1.25rem; }
+            .demo-preview { height: 130px; }
             .status { font-size: 0.85rem; }
-            .waitlist-section { padding: 20px; }
-            .waitlist-form input { min-width: 100%; }
             .cta { padding: 10px 20px; font-size: 0.9rem; }
             .partnership { font-size: 0.75rem; }
             .footer a, .footer .copyright { font-size: 0.7rem; }
+            .modal-overlay { padding: 10px; }
+            .modal-header span { font-size: 0.8rem; }
+            .modal-close { font-size: 1.4rem; }
             .footer { gap: 14px; }
         }
     </style>
@@ -394,13 +381,20 @@
         
         <div class="diagram-container">
             <svg viewBox="0 0 100 100">
+                <!-- The Triangle -->
                 <polygon points="50,10 90,85 10,85" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+                
+                <!-- Center Core Connections -->
                 <line x1="50" y1="10" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
                 <line x1="90" y1="85" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
                 <line x1="10" y1="85" x2="50" y2="60" stroke="#ff4500" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+                <!-- The Nodes -->
                 <circle cx="50" cy="10" r="3" fill="#fff"/>
                 <circle cx="90" cy="85" r="3" fill="#fff"/>
                 <circle cx="10" cy="85" r="3" fill="#fff"/>
+                
+                <!-- Center Core Node -->
                 <circle cx="50" cy="60" r="4" fill="#ff4500"/>
             </svg>
             
@@ -430,20 +424,13 @@
             <p>
                 Experience the transition from Chaos to Order. Watch how fuzzy human intent is transformed into a deterministic domain model and executable artifact in real-time.
             </p>
-            <a href="#" class="demo-launch-btn" onclick="openDemo();return false;">▶ Launch Demo</a>
-            <div class="overlay-hint">Opens in a separate overlay window</div>
+            <a href="#" class="demo-preview" onclick="openDemo();return false;">
+                <img src="/demo/screenshot.png" alt="ple demo preview">
+                <div class="demo-preview-overlay"><span>▶ Launch Demo</span></div>
+            </a>
         </div>
 
-        <div class="status">v0.5 Demo is Live. Join the Waitlist for Alpha access.</div>
-
-        <!-- Waitlist CTA -->
-        <div class="waitlist-section">
-            <h2>🔒 Get Early Access</h2>
-            <p>
-                Want to save, share, and deploy your generated models? Join the waitlist for early access to the full ple platform — including persistent storage, team collaboration, and live API deployment.
-            </p>
-            <a href="/waitlist.html" class="demo-launch-btn">Join the Waitlist</a>
-        </div>
+        <div class="status">v0.5 Demo is Live.</div>
 
         <div class="cta-container">
             <a href="/waitlist.html" class="cta">Join the Waitlist</a>
