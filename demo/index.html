@@ -157,6 +157,54 @@
         </div>
     </div>
 
+    <!-- Waitlist Capture Overlay -->
+    <div id="waitlistOverlay" class="conflict-overlay" style="display:none;">
+        <div class="conflict-modal" style="max-width:420px;">
+            <h3>🔒 Get Early Access</h3>
+            <p style="margin-bottom:12px;color:#aaa;">You're building something real. Join the waitlist to save, share, and deploy your generated models.</p>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <input id="wlEmail" type="email" placeholder="Enter your email" autocomplete="email"
+                    style="flex:1;padding:10px 12px;border:1px solid #444;background:#1a1a2e;color:#e0e0e0;border-radius:4px;font-size:0.9rem;outline:none;">
+                <button id="wlSubmit" class="btn-build-it" style="white-space:nowrap;">Join</button>
+            </div>
+            <div id="wlSuccess" style="display:none;color:#4caf50;font-weight:bold;padding:8px 0;">✓ You're on the list. We'll be in touch.</div>
+            <div id="wlError" style="display:none;color:#ff4444;font-size:0.85rem;padding:4px 0;"></div>
+            <button id="wlClose" style="background:none;border:none;color:#888;cursor:pointer;font-size:0.85rem;margin-top:4px;">Maybe later</button>
+        </div>
+    </div>
+
+    <script>
+        var _wlShown = false;
+        function showWaitlist() {
+            if (_wlShown) return;
+            _wlShown = true;
+            document.getElementById('waitlistOverlay').style.display = 'flex';
+        }
+        function hideWaitlist() {
+            document.getElementById('waitlistOverlay').style.display = 'none';
+        }
+        function submitWaitlist() {
+            var email = document.getElementById('wlEmail').value.trim();
+            var err = document.getElementById('wlError');
+            var ok = document.getElementById('wlSuccess');
+            err.style.display = 'none'; ok.style.display = 'none';
+            if (!email || !email.includes('@')) { 
+                err.textContent = 'Please enter a valid email.'; err.style.display = 'block'; return;
+            }
+            document.getElementById('wlSubmit').disabled = true;
+            document.getElementById('wlSubmit').textContent = 'Submitting...';
+            setTimeout(function() {
+                ok.style.display = 'block';
+                document.getElementById('wlEmail').style.display = 'none';
+                document.getElementById('wlSubmit').style.display = 'none';
+            }, 800);
+        }
+        document.getElementById('wlClose').addEventListener('click', hideWaitlist);
+        document.getElementById('wlSubmit').addEventListener('click', submitWaitlist);
+        document.getElementById('wlEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitWaitlist();
+        });
+    </script>
     <script src="v0.5.js"></script>
 </body>
 </html>
