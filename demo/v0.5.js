@@ -1072,7 +1072,7 @@ function init() {
   // Send button → just adds a chat bubble
   sendBtn.addEventListener('click', () => {
     const text = chatInput.value.trim();
-    if (text) sendMessage(text);
+    if (text) { sendMessage(text); showWaitlist(); }
   });
 
   // Build It → compiles the entire conversation
