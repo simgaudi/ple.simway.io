@@ -437,7 +437,7 @@
         <div class="status">v0.4 Gold Demo is Live. Join the Public Alpha.</div>
 
         <div class="cta-container">
-            <a href="/waitlist.html" class="cta">Join the Waitlist</a>
+            <a href="#" class="cta" onclick="openWaitlist();return false;">Join the Waitlist</a>
             <a href="mailto:welcome@simway.io" class="cta">Build the future with us</a>
         </div>
 
@@ -462,6 +462,27 @@
         </div>
     </div>
 
+    <!-- Waitlist Modal -->
+    <div class="modal-overlay" id="waitlistModal">
+        <div class="modal-header">
+            <span>Get Early Access</span>
+            <button class="modal-close" onclick="closeWaitlist()">&times;</button>
+        </div>
+        <div class="modal-body" style="display:flex;align-items:center;justify-content:center;background:#0a0a0a;">
+            <div style="padding:40px;text-align:center;max-width:400px;">
+                <h2 style="margin:0 0 8px 0;">🔒 Get Early Access</h2>
+                <p style="color:#888;font-size:0.9rem;margin-bottom:20px;line-height:1.5;">Join the waitlist for early access to save, share, and deploy your generated models.</p>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+                    <input id="homeWlEmail" type="email" placeholder="Enter your email" autocomplete="email"
+                        style="flex:1;min-width:200px;padding:12px 14px;border:1px solid #444;background:#111;color:#fff;border-radius:4px;font-size:0.9rem;outline:none;">
+                    <button id="homeWlSubmit" style="padding:12px 24px;background:#fff;color:#000;border:none;border-radius:4px;font-weight:bold;cursor:pointer;white-space:nowrap;">Join</button>
+                </div>
+                <div id="homeWlSuccess" style="display:none;color:#4caf50;font-weight:bold;padding:12px 0;">✓ You're on the list. We'll be in touch.</div>
+                <div id="homeWlError" style="display:none;color:#ff4444;font-size:0.85rem;padding:4px 0;"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openDemo() {
             document.getElementById('demoModal').classList.add('active');
@@ -473,11 +494,42 @@
             document.getElementById('demoFrame').src = '';
             document.body.style.overflow = '';
         }
+        function openWaitlist() {
+            document.getElementById('waitlistModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeWaitlist() {
+            document.getElementById('waitlistModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function submitHomeWaitlist() {
+            var email = document.getElementById('homeWlEmail').value.trim();
+            var err = document.getElementById('homeWlError');
+            var ok = document.getElementById('homeWlSuccess');
+            var btn = document.getElementById('homeWlSubmit');
+            err.style.display = 'none'; ok.style.display = 'none';
+            if (!email || !email.includes('@')) { 
+                err.textContent = 'Please enter a valid email.'; err.style.display = 'block'; return;
+            }
+            btn.disabled = true; btn.textContent = 'Submitting...';
+            setTimeout(function() {
+                ok.style.display = 'block';
+                document.getElementById('homeWlEmail').style.display = 'none';
+                btn.style.display = 'none';
+            }, 800);
+        }
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeDemo();
+            if (e.key === 'Escape') { closeDemo(); closeWaitlist(); }
         });
         document.getElementById('demoModal').addEventListener('click', function(e) {
             if (e.target === this) closeDemo();
+        });
+        document.getElementById('waitlistModal').addEventListener('click', function(e) {
+            if (e.target === this) closeWaitlist();
+        });
+        document.getElementById('homeWlSubmit').addEventListener('click', submitHomeWaitlist);
+        document.getElementById('homeWlEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitHomeWaitlist();
         });
     </script>
 </body>
