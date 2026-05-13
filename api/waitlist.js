@@ -23,17 +23,10 @@ export default async function handler(req, res) {
     // 1. Resend API — primary source of truth
     async () => {
       const resendApiKey = process.env.RESEND_API_KEY;
-      const audienceId = process.env.RESEND_AUDIENCE_ID;
 
       if (!resendApiKey) {
         console.warn('Resend config missing');
         throw new Error('Resend config missing');
-      }
-
-      const body = { email, unsubscribed: false };
-      // Support both old-style audience IDs and new-style segment IDs
-      if (audienceId) {
-        body.segments = [{ id: audienceId }];
       }
 
       const response = await fetch('https://api.resend.com/contacts', {

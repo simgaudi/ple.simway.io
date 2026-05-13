@@ -33,7 +33,6 @@ Opens at `http://localhost:3000`. The `/api/waitlist` route is handled locally b
 | Variable | Source |
 |---|---|
 | `RESEND_API_KEY` | [resend.com/api-keys](https://resend.com/api-keys) (Full Access) |
-| `RESEND_AUDIENCE_ID` | *Optional.* Resend Segments → segment ID |
 | `DISCORD_WEBHOOK_URL` | Discord → Channel Settings → Integrations → Webhooks |
 
 Add all variables to the Vercel dashboard under **Settings → Environment Variables** (check **Development**, **Preview**, and **Production**).
