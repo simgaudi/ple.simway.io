@@ -17,7 +17,7 @@ git clone https://github.com/sim-way/ple.simway.io.git
 cd ple.simway.io
 npm install
 vercel link
-vercel env pull .env.local   # pulls KV, Resend, and Discord credentials
+vercel env pull .env.local   # pulls Resend and Discord credentials
 ```
 
 ### Run
@@ -32,8 +32,6 @@ Opens at `http://localhost:3000`. The `/api/waitlist` route is handled locally b
 
 | Variable | Source |
 |---|---|
-| `KV_REST_API_URL` | Vercel KV dashboard → Connect to project |
-| `KV_REST_API_TOKEN` | Vercel KV dashboard |
 | `RESEND_API_KEY` | [resend.com/api-keys](https://resend.com/api-keys) |
 | `RESEND_AUDIENCE_ID` | Resend Audiences → Settings |
 | `DISCORD_WEBHOOK_URL` | Discord → Channel Settings → Integrations → Webhooks |

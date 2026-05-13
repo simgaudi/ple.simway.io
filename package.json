@@ -1,8 +1,5 @@
 {
   "name": "ple.simway.io",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@vercel/kv": "^1.0.1"
-  }
+  "private": true
 }

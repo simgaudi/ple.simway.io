@@ -1,5 +1,3 @@
-import { kv } from '@vercel/kv';
-
 export default async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,26 +18,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Valid email is required' });
   }
 
-  const timestamp = new Date().toISOString();
-
-  // Fan-out targets
+  // Fan-out: Resend (primary store) + Discord (notifications)
   const tasks = [
-    // 1. Vercel KV (The Vault)
-    async () => {
-      try {
-        await kv.sadd('waitlist:emails', email);
-        await kv.set(`waitlist:entry:${email}`, timestamp);
-        return { name: 'KV', success: true };
-      } catch (err) {
-        console.error('KV Error:', err);
-        throw new Error('KV storage failed');
-      }
-    },
-    // 2. Resend API (The Engine)
+    // 1. Resend API — primary source of truth
     async () => {
       const resendApiKey = process.env.RESEND_API_KEY;
       const audienceId = process.env.RESEND_AUDIENCE_ID;
-      
+
       if (!resendApiKey || !audienceId) {
         console.warn('Resend config missing');
         throw new Error('Resend config missing');
@@ -61,10 +46,10 @@ export default async function handler(req, res) {
       }
       return { name: 'Resend', success: true };
     },
-    // 3. Discord Webhook (The Pulse)
+    // 2. Discord Webhook — team notification
     async () => {
       const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-      
+
       if (!webhookUrl) {
         console.warn('Discord webhook URL missing');
         throw new Error('Discord config missing');
@@ -88,7 +73,7 @@ export default async function handler(req, res) {
 
   // Parallel execution with individual error handling
   const results = await Promise.allSettled(tasks.map(t => t()));
-  
+
   const anySuccess = results.some(r => r.status === 'fulfilled');
   const failures = results
     .filter(r => r.status === 'rejected')
@@ -98,11 +83,12 @@ export default async function handler(req, res) {
     console.error('Waitlist fan-out partial failures:', failures);
   }
 
+  // Return 200 as long as Resend captured the email (the primary store)
   if (anySuccess) {
     return res.status(200).json({ success: true });
-  } else {
-    return res.status(500).json({ 
-      error: 'Service temporarily unavailable. Please try again or contact welcome@simway.io.' 
-    });
   }
+
+  return res.status(500).json({
+    error: 'Service temporarily unavailable. Please try again or contact welcome@simway.io.'
+  });
 }
