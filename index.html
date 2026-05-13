@@ -518,21 +518,38 @@
             document.getElementById('waitlistModal').classList.remove('active');
             document.body.style.overflow = '';
         }
-        function submitHomeWaitlist() {
+        async function submitHomeWaitlist() {
             var email = document.getElementById('homeWlEmail').value.trim();
             var err = document.getElementById('homeWlError');
             var ok = document.getElementById('homeWlSuccess');
             var btn = document.getElementById('homeWlSubmit');
+            var input = document.getElementById('homeWlEmail');
             err.style.display = 'none'; ok.style.display = 'none';
             if (!email || !email.includes('@')) { 
                 err.textContent = 'Please enter a valid email.'; err.style.display = 'block'; return;
             }
             btn.disabled = true; btn.textContent = 'Submitting...';
-            setTimeout(function() {
-                ok.style.display = 'block';
-                document.getElementById('homeWlEmail').style.display = 'none';
-                btn.style.display = 'none';
-            }, 800);
+            try {
+                var res = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                if (res.ok) {
+                    ok.style.display = 'block';
+                    input.style.display = 'none';
+                    btn.style.display = 'none';
+                } else {
+                    var data = await res.json();
+                    err.textContent = data.error || 'Something went wrong. Please try again.';
+                    err.style.display = 'block';
+                    btn.disabled = false; btn.textContent = 'Join';
+                }
+            } catch (e) {
+                err.textContent = 'Connection error. Please try again.';
+                err.style.display = 'block';
+                btn.disabled = false; btn.textContent = 'Join';
+            }
         }
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') { closeDemo(); closeWaitlist(); }
