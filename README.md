@@ -28,6 +28,14 @@ vercel dev
 
 Opens at `http://localhost:3000`. The `/api/waitlist` route is handled locally by the Vercel dev server.
 
+### Test
+
+```bash
+npm test
+```
+
+Runs unit tests for the `/api/waitlist` handler (validation, CORS, partial failures, missing config).
+
 ### Required Environment Variables
 
 | Variable | Source |
