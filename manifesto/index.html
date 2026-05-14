@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Manifesto — ple | Why Generated Code Must Be Disposable</title>
+
+    <meta name="description" content="The Simway Manifesto: Why generated code must be disposable. Stop debugging AI hallucinations. Start compiling pure intent.">
+    <meta property="og:title" content="The Manifesto — ple | Why Generated Code Must Be Disposable">
+    <meta property="og:description" content="Stop debugging AI hallucinations. Start compiling pure intent.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ple.simway.io/manifesto">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="keywords" content="Simway Manifesto, Disposable Code, Deterministic Intent Engine, AI Code Generation, Intent Engineering">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px 60px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 60px;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #888;
+        }
+        .back-link::before {
+            content: "← ";
+        }
+        h1 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ff4500;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+        }
+        h2 {
+            font-size: 3rem;
+            margin: 0 0 60px 0;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            font-weight: bold;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 56px 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .section-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 24px 0;
+        }
+        p {
+            color: #aaa;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+        p.lead {
+            color: #fff;
+            font-size: 1.35rem;
+            line-height: 1.6;
+            font-weight: 500;
+            margin-bottom: 36px;
+        }
+        .accent {
+            color: #ff4500;
+        }
+        .closing {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1.5;
+            margin-top: 60px;
+            margin-bottom: 0;
+            padding-top: 32px;
+            border-top: 1px solid #333;
+            text-align: center;
+        }
+        .footer {
+            border-top: 1px solid #222;
+            padding-top: 20px;
+            margin-top: 80px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .footer a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: #888;
+        }
+        .footer .copyright {
+            color: #444;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 50px 20px 40px 20px; }
+            h2 { font-size: 2rem; margin-bottom: 40px; }
+            h3 { font-size: 1.25rem; margin-top: 40px; }
+            p { font-size: 1rem; line-height: 1.7; }
+            p.lead { font-size: 1.15rem; }
+            .closing { font-size: 1.15rem; margin-top: 40px; }
+            .footer { gap: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 30px 16px 30px 16px; }
+            .back-link { margin-bottom: 40px; }
+            h1 { font-size: 0.7rem; letter-spacing: 2px; }
+            h2 { font-size: 1.5rem; margin-bottom: 30px; }
+            h3 { font-size: 1.1rem; margin-top: 32px; }
+            p { font-size: 0.9rem; line-height: 1.7; }
+            p.lead { font-size: 1rem; }
+            .closing { font-size: 1rem; margin-top: 32px; padding-top: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">Back to ple</a>
+
+        <h1>The Manifesto</h1>
+        <h2>Why Generated Code<br>Must Be Disposable</h2>
+
+        <p class="lead">The software industry is currently trapped in a <span class="accent">collective delusion</span>. We are using the most advanced probabilistic reasoning engines in human history — LLMs — to generate the most rigid, deterministic structures we have: source code.</p>
+
+        <p><strong>And it is exhausting us.</strong></p>
+
+        <p>Right now, developers are spending less time writing code and more time acting as supervisors for AI agents that produce code that is "almost right, but not quite." We are trading the labor of typing for the <span class="accent">immense cognitive debt</span> of auditing hallucinated logic, hidden race conditions, and subtly flawed state management.</p>
+
+        <p>When you ask an AI to write your backend, <span class="accent">you are not buying a solution; you are buying a legacy codebase you don't understand.</span> And when it breaks, you are the one who has to debug it.</p>
+
+        <p>This is a structural failure. AI should not be writing your business logic in a probabilistic manner.</p>
+
+        <h3>The Paradigm Shift</h3>
+        <p class="section-label">From Scaffolding to Compilation</p>
+
+        <p>At Simway, we believe the current approach is backward. We are anchoring to the absolute theoretical limit of LLMs: <span class="accent">perfect probabilistic semantic translation</span>.</p>
+
+        <p>We treat the LLM not as a junior developer, but as a commoditized UI. Its only job is to flawlessly map chaotic human intent — Domain-Driven Design, natural language, BDD specs — into a rigid, mathematically pure Intermediate Representation: the ADM.</p>
+
+        <p>Once that translation is complete, the LLM's job is done.</p>
+
+        <p>The rest is handled by our deterministic compiler. It takes that rigid structure and generates a complete, headless, Event-Sourced backend engine. No hallucinations. No guessing. <span class="accent">Just pure execution.</span></p>
+
+        <h3>Disposable Code</h3>
+
+        <p>Because the compiler is deterministic, and because the architecture is strictly Event-Sourced, the generated Java code is <span class="accent">entirely disposable exhaust</span>.</p>
+
+        <p>We will never treat the generated code as the source of truth. You will never need to read it, maintain it, or patch it.</p>
+
+        <p>If there is a bug, or if the business requirements change, you do not open the IDE and refactor the code. You update your human-readable Domain Model, and you press "Compile." The engine throws away the old codebase, generates a brand new one, and replays your immutable event log to instantly rehydrate the new state. <span class="accent">Zero database migration debt. Zero cognitive debt.</span></p>
+
+        <p>We are eliminating the need for humans to review programming languages. Programming languages exist for computers. The machine must adapt to the human domain expert, not the other way around.</p>
+
+        <p class="closing">Stop debugging AI hallucinations.<br>Start compiling pure intent.</p>
+
+        <div class="footer">
+            <a href="/">ple.simway.io</a>
+            <a href="https://github.com/sim-way/ple.simway.io">GitHub</a>
+            <span class="copyright">© 2026 Simway</span>
+        </div>
+    </div>
+</body>
+</html>
