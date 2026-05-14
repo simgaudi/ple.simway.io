@@ -239,6 +239,31 @@
         .manifesto-section .accent {
             color: #ff4500;
         }
+        .manifesto-subhead {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 48px 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .subhead-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 24px 0;
+        }
+        .manifesto-closing {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1.5;
+            margin-top: 40px;
+            margin-bottom: 0;
+            padding-top: 32px;
+            border-top: 1px solid #333;
+            text-align: center;
+        }
         .demo-section {
             margin: 100px auto;
             padding: 40px;
@@ -386,6 +411,8 @@
             .manifesto-section h3 { font-size: 1.5rem; }
             .manifesto-section p { font-size: 1rem; }
             .manifesto-section p.lead { font-size: 1.15rem; }
+            .manifesto-subhead { font-size: 1.2rem; margin-top: 36px; }
+            .manifesto-closing { font-size: 1.15rem; }
             .demo-section { margin: 60px auto; padding: 24px; }
             .demo-section h2 { font-size: 1.5rem; }
             .demo-section p { font-size: 0.95rem; }
@@ -416,6 +443,8 @@
             .manifesto-section h3 { font-size: 1.25rem; margin-bottom: 28px; }
             .manifesto-section p { font-size: 0.9rem; line-height: 1.7; }
             .manifesto-section p.lead { font-size: 1rem; }
+            .manifesto-subhead { font-size: 1.05rem; margin-top: 28px; }
+            .manifesto-closing { font-size: 1rem; padding-top: 24px; margin-top: 28px; }
             .demo-section { margin: 40px auto; padding: 20px; }
             .demo-section h2 { font-size: 1.25rem; }
             .demo-preview { height: 130px; }
@@ -491,9 +520,39 @@
         <div class="manifesto-section">
             <h2>The Manifesto</h2>
             <h3>Why Generated Code<br>Must Be Disposable</h3>
+
             <p class="lead">The software industry is currently trapped in a <span class="accent">collective delusion</span>. We are using the most advanced probabilistic reasoning engines in human history — LLMs — to generate the most rigid, deterministic structures we have: source code.</p>
+
             <p><strong>And it is exhausting us.</strong></p>
+
             <p>Right now, developers are spending less time writing code and more time acting as supervisors for AI agents that produce code that is "almost right, but not quite." We are trading the labor of typing for the <span class="accent">immense cognitive debt</span> of auditing hallucinated logic, hidden race conditions, and subtly flawed state management.</p>
+
+            <p>When you ask an AI to write your backend, <span class="accent">you are not buying a solution; you are buying a legacy codebase you don't understand.</span> And when it breaks, you are the one who has to debug it.</p>
+
+            <p>This is a structural failure. AI should not be writing your business logic in a probabilistic manner.</p>
+
+            <h4 class="manifesto-subhead">The Paradigm Shift</h4>
+            <p class="subhead-label">From Scaffolding to Compilation</p>
+
+            <p>At Simway, we believe the current approach is backward. We are anchoring to the absolute theoretical limit of LLMs: <span class="accent">perfect probabilistic semantic translation</span>.</p>
+
+            <p>We treat the LLM not as a junior developer, but as a commoditized UI. Its only job is to flawlessly map chaotic human intent — Domain-Driven Design, natural language, BDD specs — into a rigid, mathematically pure Intermediate Representation: the ADM.</p>
+
+            <p>Once that translation is complete, the LLM's job is done.</p>
+
+            <p>The rest is handled by our deterministic compiler. It takes that rigid structure and generates a complete, headless, Event-Sourced backend engine. No hallucinations. No guessing. <span class="accent">Just pure execution.</span></p>
+
+            <h4 class="manifesto-subhead">Disposable Code</h4>
+
+            <p>Because the compiler is deterministic, and because the architecture is strictly Event-Sourced, the generated Java code is <span class="accent">entirely disposable exhaust</span>.</p>
+
+            <p>We will never treat the generated code as the source of truth. You will never need to read it, maintain it, or patch it.</p>
+
+            <p>If there is a bug, or if the business requirements change, you do not open the IDE and refactor the code. You update your human-readable Domain Model, and you press "Compile." The engine throws away the old codebase, generates a brand new one, and replays your immutable event log to instantly rehydrate the new state. <span class="accent">Zero database migration debt. Zero cognitive debt.</span></p>
+
+            <p>We are eliminating the need for humans to review programming languages. Programming languages exist for computers. The machine must adapt to the human domain expert, not the other way around.</p>
+
+            <p class="manifesto-closing">Stop debugging AI hallucinations.<br>Start compiling pure intent.</p>
         </div>
 
         <div class="demo-section">
