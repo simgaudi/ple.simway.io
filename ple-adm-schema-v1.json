@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ple.simway.io/ple-adm-schema-v1.json",
+  "title": "ple Application Domain Model (ADM) Schema v1",
+  "description": "The mathematical intermediate representation for the ple deterministic intent compiler. This schema defines the rigid boundary between probabilistic semantic translation and deterministic code generation.",
+  "type": "object",
+  "required": ["domain", "boundedContexts", "events", "commands", "projections"],
+  "properties": {
+    "domain": {
+      "type": "object",
+      "description": "Top-level domain definition and ubiquitous language glossary.",
+      "required": ["name", "ubiquitousLanguage"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "ubiquitousLanguage": {
+          "type": "object",
+          "description": "Key domain terms and their precise definitions."
+        }
+      }
+    },
+    "boundedContexts": {
+      "type": "array",
+      "description": "Topological sub-graphs defining isolated domain contexts.",
+      "items": {
+        "type": "object",
+        "required": ["name", "aggregates"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "aggregates": {
+            "type": "array",
+            "description": "Aggregate roots within this bounded context."
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "Immutable domain events in the append-only event store.",
+      "items": {
+        "type": "object",
+        "required": ["name", "payload"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "payload": {
+            "type": "object",
+            "description": "JSON schema for the event payload."
+          }
+        }
+      }
+    },
+    "commands": {
+      "type": "array",
+      "description": "Intent commands that may produce domain events.",
+      "items": {
+        "type": "object",
+        "required": ["name", "targetAggregate"],
+        "properties": {
+          "name": { "type": "string" },
+          "targetAggregate": { "type": "string" },
+          "validation": { "type": "object" }
+        }
+      }
+    },
+    "projections": {
+      "type": "array",
+      "description": "Read model projections derived from event streams.",
+      "items": {
+        "type": "object",
+        "required": ["name", "sourceEvents"],
+        "properties": {
+          "name": { "type": "string" },
+          "sourceEvents": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

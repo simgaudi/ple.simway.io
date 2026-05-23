@@ -3,143 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Manifesto — ple | Why Generated Code Must Be Disposable</title>
+    <title>The ple Manifesto — Why "Vibe Coding" Is a Dead End</title>
 
-    <meta name="description" content="The Simway Manifesto: Why generated code must be disposable. Stop debugging AI hallucinations. Start compiling pure intent.">
-    <meta property="og:title" content="The Manifesto — ple | Why Generated Code Must Be Disposable">
-    <meta property="og:description" content="Stop debugging AI hallucinations. Start compiling pure intent.">
+    <meta name="description" content="The ple Manifesto: Why Vibe Coding is a dead end, and how Probabilistic-Logical-Execution fixes it. Stop patching broken machine code. Start compiling pure intent.">
+    <meta property="og:title" content="The ple Manifesto — Why Vibe Coding Is a Dead End">
+    <meta property="og:description" content="Stop patching broken machine code. Stop drowning in Cognitive Debt. Separate the probability of the LLM from the determinism of the compiler.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ple.simway.io/manifesto">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="keywords" content="Simway Manifesto, Disposable Code, Deterministic Intent Engine, AI Code Generation, Intent Engineering">
+    <meta name="keywords" content="ple Manifesto, Vibe Coding, Cognitive Debt, Deterministic Compiler, Disposable Code, Event Sourcing, ADM, Domain Driven Design, Intent Engineering">
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --body: #aaa;
+            --muted: #666;
+            --accent: #ff4500;
+            --accent-dim: #cc3700;
+            --border: #222;
+            --border-light: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
+            background-color: var(--bg);
+            color: var(--fg);
             margin: 0;
             padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 80px 20px 60px 20px;
+            padding: 80px 24px 80px 24px;
         }
+
+        /* ---- Navigation ---- */
         .back-link {
             display: inline-block;
-            color: #555;
+            color: var(--muted);
             text-decoration: none;
             font-size: 0.85rem;
-            margin-bottom: 60px;
+            margin-bottom: 64px;
             transition: color 0.2s;
+            letter-spacing: 0.02em;
         }
         .back-link:hover {
-            color: #888;
+            color: var(--body);
         }
         .back-link::before {
             content: "← ";
         }
-        h1 {
-            font-size: 0.8rem;
+
+        /* ---- Typography ---- */
+        .kicker {
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #ff4500;
-            margin: 0 0 12px 0;
+            color: var(--accent);
+            margin: 0 0 16px 0;
             font-weight: 600;
         }
+
         h2 {
             font-size: 3rem;
-            margin: 0 0 60px 0;
+            margin: 0 0 12px 0;
             letter-spacing: -1.5px;
-            line-height: 1.1;
-            font-weight: bold;
+            line-height: 1.08;
+            font-weight: 700;
+            color: var(--fg);
         }
-        h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            margin: 56px 0 4px 0;
-            letter-spacing: -0.5px;
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin: 0 0 64px 0;
+            font-weight: 400;
+            line-height: 1.5;
         }
-        .section-label {
-            font-size: 0.8rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 24px 0;
+
+        /* ---- Prologue ---- */
+        .prologue {
+            margin-bottom: 72px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--border);
         }
-        p {
-            color: #aaa;
-            font-size: 1.15rem;
-            line-height: 1.8;
+        .prologue p {
+            color: var(--body);
+            font-size: 1.2rem;
+            line-height: 1.75;
             margin-bottom: 28px;
         }
-        p.lead {
-            color: #fff;
+        .prologue p:first-of-type {
+            color: var(--fg);
             font-size: 1.35rem;
             line-height: 1.6;
             font-weight: 500;
-            margin-bottom: 36px;
         }
-        .accent {
-            color: #ff4500;
+
+        /* ---- Section ---- */
+        .section {
+            margin-bottom: 64px;
         }
-        .closing {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #fff;
-            line-height: 1.5;
-            margin-top: 60px;
+        .section-number {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--accent);
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .section h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--fg);
+            margin: 0 0 20px 0;
+            letter-spacing: -0.5px;
+            line-height: 1.25;
+        }
+        .section p {
+            color: var(--body);
+            font-size: 1.1rem;
+            line-height: 1.75;
+            margin-bottom: 22px;
+        }
+        .section p:last-child {
             margin-bottom: 0;
-            padding-top: 32px;
-            border-top: 1px solid #333;
+        }
+
+        /* ---- Emphasis ---- */
+        .accent {
+            color: var(--accent);
+        }
+        strong {
+            color: var(--fg);
+            font-weight: 600;
+        }
+        em {
+            font-style: italic;
+            color: #ccc;
+        }
+
+        /* ---- Blockquote-style highlight ---- */
+        .axiom {
+            border-left: 2px solid var(--accent);
+            padding: 8px 0 8px 24px;
+            margin: 28px 0;
+            color: var(--fg);
+            font-size: 1.15rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* ---- Closing ---- */
+        .closing {
+            margin-top: 72px;
+            padding-top: 48px;
+            border-top: 1px solid var(--border-light);
             text-align: center;
         }
+        .closing p {
+            color: var(--fg);
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+        .closing .sub {
+            color: var(--muted);
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+
+        /* ---- CTA ---- */
+        .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+        .cta {
+            display: inline-block;
+            padding: 14px 32px;
+            border: 1px solid var(--fg);
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+        .cta:hover {
+            background-color: var(--fg);
+            color: var(--bg);
+        }
+        .cta-secondary {
+            border-color: var(--border-light);
+            color: var(--body);
+        }
+        .cta-secondary:hover {
+            border-color: var(--fg);
+            color: var(--fg);
+            background-color: transparent;
+        }
+
+        /* ---- Footer ---- */
         .footer {
-            border-top: 1px solid #222;
-            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
             margin-top: 80px;
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 32px;
             flex-wrap: wrap;
+            align-items: center;
         }
         .footer a {
-            color: #555;
+            color: var(--muted);
             text-decoration: none;
             font-size: 0.8rem;
             transition: color 0.2s;
         }
         .footer a:hover {
-            color: #888;
+            color: var(--body);
         }
         .footer .copyright {
             color: #444;
             font-size: 0.8rem;
         }
 
+        /* ---- Responsive ---- */
         @media (max-width: 768px) {
-            .container { padding: 50px 20px 40px 20px; }
-            h2 { font-size: 2rem; margin-bottom: 40px; }
-            h3 { font-size: 1.25rem; margin-top: 40px; }
-            p { font-size: 1rem; line-height: 1.7; }
-            p.lead { font-size: 1.15rem; }
-            .closing { font-size: 1.15rem; margin-top: 40px; }
+            .container { padding: 48px 20px 56px 20px; }
+            h2 { font-size: 2.2rem; }
+            .prologue p:first-of-type { font-size: 1.15rem; }
+            .prologue p { font-size: 1.05rem; }
+            .section h3 { font-size: 1.3rem; }
+            .section p { font-size: 1rem; line-height: 1.7; }
+            .axiom { font-size: 1.05rem; }
+            .closing p { font-size: 1.2rem; }
+            .closing .sub { font-size: 0.9rem; }
             .footer { gap: 20px; }
         }
 
         @media (max-width: 480px) {
-            .container { padding: 30px 16px 30px 16px; }
+            .container { padding: 32px 16px 40px 16px; }
             .back-link { margin-bottom: 40px; }
-            h1 { font-size: 0.7rem; letter-spacing: 2px; }
-            h2 { font-size: 1.5rem; margin-bottom: 30px; }
-            h3 { font-size: 1.1rem; margin-top: 32px; }
-            p { font-size: 0.9rem; line-height: 1.7; }
-            p.lead { font-size: 1rem; }
-            .closing { font-size: 1rem; margin-top: 32px; padding-top: 24px; }
+            h2 { font-size: 1.65rem; letter-spacing: -0.8px; }
+            .subtitle { font-size: 0.95rem; margin-bottom: 44px; }
+            .prologue { margin-bottom: 48px; padding-bottom: 32px; }
+            .prologue p:first-of-type { font-size: 1.05rem; }
+            .prologue p { font-size: 0.95rem; }
+            .section { margin-bottom: 44px; }
+            .section h3 { font-size: 1.15rem; }
+            .section p { font-size: 0.9rem; line-height: 1.65; }
+            .axiom { font-size: 0.95rem; padding: 6px 0 6px 16px; margin: 20px 0; }
+            .closing { margin-top: 48px; padding-top: 32px; }
+            .closing p { font-size: 1.1rem; }
+            .cta-group { flex-direction: column; }
+            .cta { width: 100%; text-align: center; }
+            .footer { flex-direction: column; gap: 12px; margin-top: 56px; }
         }
     </style>
 </head>
@@ -147,41 +282,131 @@
     <div class="container">
         <a href="/" class="back-link">Back to ple</a>
 
-        <h1>The Manifesto</h1>
-        <h2>Why Generated Code<br>Must Be Disposable</h2>
+        <div class="kicker">The Manifesto</div>
+        <h2>Why "Vibe Coding"<br>Is a Dead End</h2>
+        <p class="subtitle">(And how we fix it.)</p>
 
-        <p class="lead">The software industry is currently trapped in a <span class="accent">collective delusion</span>. We are using the most advanced probabilistic reasoning engines in human history — LLMs — to generate the most rigid, deterministic structures we have: source code.</p>
+        <!-- Prologue -->
+        <div class="prologue">
+            <p>We are building on a <span class="accent">fault line</span>.</p>
 
-        <p><strong>And it is exhausting us.</strong></p>
+            <p>The current trajectory of AI-assisted software development — letting general-purpose LLMs iteratively generate, modify, and scaffold raw source code — is a trap. For a weekend hackathon, it's magic. <strong>At enterprise scale, it is a structural disaster.</strong></p>
 
-        <p>Today, developers spend less time writing code and more time acting as supervisors for AI agents that produce code that is "almost right, but not quite." We are trading the labor of typing for the <span class="accent">immense cognitive debt</span> of auditing hallucinated logic, hidden race conditions, and subtly flawed state management.</p>
+            <p>We call it <strong>"Vibe Coding,"</strong> and it fundamentally fails because it accelerates the accumulation of <strong>Cognitive Debt</strong>: the crushing burden placed on human developers to read, audit, and maintain fragile, non-deterministic, machine-generated code. When the machine writes code faster than you can read it, verify it, and debug it, the entire system collapses.</p>
 
-        <p>When you ask an AI to write your backend, <span class="accent">you are not buying a solution; you are buying a legacy codebase you do not understand.</span> And when it breaks, you are the one who must debug it.</p>
+            <p>Attempting to fix structural architectural decay by prompting an LLM to patch broken generated code is like <span class="accent">trying to fix a crumbling foundation with a paint roller.</span> You cannot fix a deterministic structural collapse with probabilistic mechanisms.</p>
 
-        <p>This is a structural failure. AI should not write your business logic in a probabilistic manner.</p>
+            <p>It's time to stop treating the LLM as a Junior Developer. It's time to treat it as a <strong>Semantic Mapper</strong>.</p>
 
-        <h3>The Paradigm Shift</h3>
-        <p class="section-label">From Scaffolding to Compilation</p>
+            <p>Welcome to <strong>Probabilistic-Logical-Execution (<span class="accent">ple</span>)</strong>.</p>
+        </div>
 
-        <p>At Simway, we believe the current approach is backward. We are anchoring to the absolute theoretical limit of LLMs: <span class="accent">perfect probabilistic semantic translation</span>.</p>
+        <!-- Section 1 -->
+        <div class="section">
+            <div class="section-number">§1</div>
+            <h3>The Chaos Axiom: Anchoring to the Semantic Ceiling</h3>
 
-        <p>We treat the LLM not as a junior developer, but as a commoditized UI. Its only job is to flawlessly map chaotic human intent — Domain-Driven Design, natural language, and BDD specifications — into a rigid, mathematically pure Intermediate Representation: the ADM.</p>
+            <p>The industry is desperately trying to force LLMs to behave like deterministic state machines so they can write reliable code. <strong>We fundamentally reject this.</strong></p>
 
-        <p>Once that translation is complete, the LLM's job is done.</p>
+            <div class="axiom">
+                <strong>The Chaos Axiom:</strong> We explicitly reject the pursuit of bit-for-bit deterministic LLMs. True intelligence requires probabilistic flexibility (Chaos).
+            </div>
 
-        <p>The rest is handled by our deterministic compiler. It takes that rigid structure and generates a complete, headless, Event-Sourced backend engine. No hallucinations. No guessing. <span class="accent">Just pure execution.</span></p>
+            <p>Instead of fighting the LLM's chaotic nature, <span class="accent">ple</span> leverages its absolute theoretical ceiling: <strong>perfect probabilistic semantic translation</strong>. We take the chaotic, informal reality of human thought and flawlessly translate it into a rigid, structured mathematical boundary — the <strong>Abstract Domain Model (ADM)</strong>.</p>
 
-        <h3>Disposable Code</h3>
+            <p>When the LLM outputs the JSON ADM, the probabilistic phase ends. <span class="accent">Our deterministic compiler takes over.</span></p>
+        </div>
 
-        <p>Because the compiler is deterministic, and because the architecture is strictly Event-Sourced, the generated code is <span class="accent">entirely disposable exhaust</span>.</p>
+        <!-- Section 2 -->
+        <div class="section">
+            <div class="section-number">§2</div>
+            <h3>Disposable Code and the True Source of Truth</h3>
 
-        <p>We will never treat the generated code as the source of truth. You will never need to read it, maintain it, or patch it.</p>
+            <p>The software industry operates under the hallucination that the codebase is a static asset. <strong>In reality, code is a liability.</strong> The true, immutable asset is your <strong>Domain Intent</strong> — the pure business rules and logic.</p>
 
-        <p>If there is a bug, or if the business requirements change, you do not open the IDE and refactor the code. You update your human-readable Domain Model and press "Compile." The engine discards the old codebase, generates a brand new one, and replays your immutable event log to instantly rehydrate the new state. <span class="accent">Zero database migration debt. Zero cognitive debt.</span></p>
+            <p>With <span class="accent">ple</span>, the LLM translates your unstructured intent into a rigid ADM JSON schema. Then, a strict deterministic compiler executes this ADM to generate 100% of your application's backend architecture, state machines, and Event Sourced persistence layers.</p>
 
-        <p>We are eliminating the need for humans to review programming languages. Programming languages exist for computers. The machine must adapt to the human domain expert, not the other way around.</p>
+            <p><strong>The code is treated as disposable exhaust.</strong> If the output is wrong, we fix the intent and regenerate. We never patch the generated code. We eliminate Cognitive Debt by making the code irrelevant to the human.</p>
+        </div>
 
-        <p class="closing">Stop debugging AI hallucinations.<br>Start compiling pure intent.</p>
+        <!-- Section 3 -->
+        <div class="section">
+            <div class="section-number">§3</div>
+            <h3>The Triad of Intent: DDD, BDD, TDD</h3>
+
+            <p>Historically, Domain-Driven Design (DDD) and Behavior-Driven Development (BDD) failed at scale because of implementation friction. Humans inevitably drift from the Ubiquitous Language when writing mechanical code under deadline pressure.</p>
+
+            <p><span class="accent">ple</span> enforces the <strong>Triad of Intent</strong> mathematically:</p>
+
+            <p><strong>1. DDD:</strong> Forms the Ubiquitous Language. If a concept doesn't exist in your domain model, the compiler refuses to generate it.<br>
+            <strong>2. BDD:</strong> The executable verification boundary. You define the exact state transitions.<br>
+            <strong>3. TDD:</strong> The compiler inherently translates your original BDD specifications into executable integration tests directly inside the generated artifact.</p>
+
+            <p>No regex parsers. No manual mapping. <span class="accent">The math enforces the architecture.</span></p>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section">
+            <div class="section-number">§4</div>
+            <h3>The Event Sourcing Mandate: Zero-Debt Migrations</h3>
+
+            <p>Traditional CRUD databases store state in rigid tables, making schema migrations a nightmare. <span class="accent">ple</span> completely bypasses this.</p>
+
+            <p>All <span class="accent">ple</span>-generated applications default to an <strong>Event Sourcing</strong> architecture. State is calculated deterministically by replaying an append-only log of immutable historical events.</p>
+
+            <p>When your business logic evolves, you don't write complex SQL migrations. You simply update your intent, <span class="accent">ple</span> compiles a completely new codebase, automatically generates JSON-to-JSON "Upcasters" for legacy events, and replays the ledger. You throw away the old disposable code and instantly rehydrate the new Read Models. <strong>We make traditional database migrations obsolete.</strong></p>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="section">
+            <div class="section-number">§5</div>
+            <h3>The Isomorphic Dual Contract (Solving the Headless Paradox)</h3>
+
+            <p>Because we generate headless backends, how does a non-technical Domain Expert verify the logic without reading code?</p>
+
+            <p><span class="accent">ple</span> introduces the <strong>Isomorphic Dual Contract</strong>:</p>
+
+            <p><strong>1. The Text Contract (PRD):</strong> A structured English narrative translated <em>backward</em> from the mathematical ADM.<br>
+            <strong>2. The Diagram Contract:</strong> Interactive state charts simulating the event flow.</p>
+
+            <p>Because both are generated from the exact same Abstract Syntax Tree (the ADM), they are <strong>mathematically guaranteed to be 100% isomorphic</strong>. The ambiguity of the text is anchored by the rigid topology of the diagram. When you approve both, you are explicitly approving the underlying math. <span class="accent">The PRD is the compilation.</span></p>
+        </div>
+
+        <!-- Section 6 -->
+        <div class="section">
+            <div class="section-number">§6</div>
+            <h3>Bounded Spouts: Stopping the "Whack-a-Mole" Degradation</h3>
+
+            <p>When you ask an LLM to iteratively edit a codebase, you get silent corruption across the application.</p>
+
+            <p>To solve this, <span class="accent">ple</span> uses <strong>Bounded Spouts</strong>. When a user requests an edit, the compiler dynamically slices an isolated sub-graph of the ADM based on semantic relevance. The LLM operates <em>strictly</em> within this topological sandbox. If the LLM hallucinates and attempts to mutate state outside this boundary, the compiler instantly rejects the patch.</p>
+
+            <p>You get a <strong>Deterministic Diff</strong>, allowing you to verify only the surgical changes before the compiler deterministically merges the sub-graph back into the global ADM.</p>
+        </div>
+
+        <!-- Section 7 -->
+        <div class="section">
+            <div class="section-number">§7</div>
+            <h3>Data Sovereignty and the Escape Hatch</h3>
+
+            <p>We are not building a walled garden. The <strong>Application Domain Model (ADM)</strong> is a standalone, framework-agnostic definition of your absolute truth. You physically hold the serialized JSON. <span class="accent">You are never locked into a proprietary cloud database or obscured generated code.</span></p>
+
+            <p>For edge-case mechanical logic (e.g., proprietary cryptographic algorithms), <span class="accent">ple</span> enforces a strict <strong>Plugin/Extension API (Side-Effect Ports)</strong> architecture. The compiler generates strict interface boundaries, and you write custom adapters that survive regeneration cycles. The ADM governs the State Machine; the escape hatch governs the Turing-Complete mechanics.</p>
+        </div>
+
+        <!-- Closing -->
+        <div class="closing">
+            <p>The Paradigm Shift</p>
+            <p class="sub">We are changing the paradigm of software development. Humans should not need to learn or review programming languages anymore. Programming languages exist for computers to understand human intent. The machine must learn and adapt to the human, not the other way around.</p>
+
+            <p>Stop patching broken machine code.<br>Stop drowning in Cognitive Debt.</p>
+            <p class="sub">Separate the probability of the LLM from the determinism of the compiler. Join the shift.</p>
+
+            <div class="cta-group">
+                <a href="/ple-adm-schema-v1.json" class="cta">View the ADM Schema (v1)</a>
+                <a href="mailto:welcome@simway.io" class="cta cta-secondary">Join the Alpha Waitlist</a>
+            </div>
+        </div>
 
         <div class="footer">
             <a href="/">ple.simway.io</a>
